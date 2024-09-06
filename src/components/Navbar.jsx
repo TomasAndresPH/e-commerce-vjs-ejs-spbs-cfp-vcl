@@ -17,12 +17,14 @@ const Navbar = () => {
     >
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         {/* Imagen de la tienda */}
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <img
-            src="https://ecoplastics.store/wp-content/uploads/2022/09/blanco-01.png"
-            alt="Logo de la tienda"
-            style={{ height: '60px', objectFit: 'contain' }} // Ajusta el tamaño según sea necesario
-          />
+        <Box sx={{ display: 'flex', alignItems: 'center' }} >
+          <Button href="/">
+            <img
+              src="https://ecoplastics.store/wp-content/uploads/2022/09/blanco-01.png"
+              alt="Logo de la tienda"
+              style={{ height: '60px', objectFit: 'contain' }} // Ajusta el tamaño según sea necesario
+            />
+          </Button>
         </Box>
 
         {/* Contenedor de los elementos de la derecha */}
@@ -58,7 +60,7 @@ const Navbar = () => {
           </Box>
 
           {/* Botón de Ingresar con estilo en blanco */}
-          <Button
+          <Button href="/login"
             variant="outlined"
             sx={{
               borderColor: 'white', // Borde en blanco
