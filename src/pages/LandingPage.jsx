@@ -1,26 +1,26 @@
 import React from 'react';
 import { Container, Typography, Box, Grid, TextField, Button } from '@mui/material';
 import Carousel from 'react-material-ui-carousel'; // Asegúrate de instalar react-material-ui-carousel
+import logoEco from '../assets/logoeco.png';
 
 // Sección del Carrusel
 function CarouselSection() {
   const items = [
     {
-      image: 'https://via.placeholder.com/1600x600/ff7f7f/333333?text=Imagen+1',
-      title: 'Bienvenidos a Nuestro E-commerce',
+      image: logoEco,
     },
     {
-      image: 'https://via.placeholder.com/1600x600/7fbfff/333333?text=Imagen+2',
-      title: 'Encuentra lo que necesitas',
+      image: 'https://img.huffingtonpost.es/files/image_720_480/uploads/2023/04/24/envases-de-plastico-de-diferentes-tamanos.jpeg',
+      title: 'Todo tipo de plasticos para tus alimentos🤤🤤',
     },
     {
-      image: 'https://via.placeholder.com/1600x600/ffbf7f/333333?text=Imagen+3',
-      title: 'Mejores Ofertas y Descuentos',
+      image: 'https://evaldistribuidora.cl/wp-content/uploads/2022/07/Envase-aluminio-rect.-v-95-scaled.jpg',
+      title: 'Variedad de productos para tu hogar🏠',
     },
   ];
 
   return (
-    <Box sx={{ mt: 8, mb: 8 }}>
+    <Box sx={{ mt: 10, mb: 8 }}>
       <Carousel>
         {items.map((item, index) => (
           <Box
@@ -35,11 +35,25 @@ function CarouselSection() {
               alignItems: 'center',
               justifyContent: 'center',
               color: 'white',
+              borderRadius: '20px',
+              overflow: 'hidden',
             }}
           >
-            <Typography variant="h3" component="div" sx={{ textAlign: 'center', background: 'rgba(0, 0, 0, 0.5)', p: 2 }}>
-              {item.title}
-            </Typography>
+            {item.title && (
+              <Typography 
+                variant="h2" 
+                component="div" 
+                sx={{ 
+                  textAlign: 'center',
+                  p: 2, 
+                  fontWeight: 'bold',
+                  background: 'rgba(0, 0, 0, 0.8)', // Fondo semitransparente para el texto
+                  borderRadius: '10px', // Borde redondeado para el fondo del texto
+                }}
+              >
+                {item.title}
+              </Typography>
+            )}
           </Box>
         ))}
       </Carousel>
@@ -47,30 +61,50 @@ function CarouselSection() {
   );
 }
 
-// Sección de Productos Más Vendidos
 function BestSellersSection() {
+  // Array de productos más vendidos
+  const bestSellers = [
+    { name: 'Plasticos', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+    { name: 'Aluminios', image: 'https://distribuidoratodoinsumos.cl/wp-content/uploads/2023/05/ti-219.jpg' },
+    { name: 'Papeleria', image: 'https://img.freepik.com/fotos-premium/utensilios-papel-ecologicos_89381-3383.jpg' },
+    { name: 'Material', image: 'https://www.mallasyplasticos.com/227-large_default/film-polietileno-natural-g-400-rollos.jpg' },
+  ];
+
   return (
     <Container sx={{ mb: 8 }}>
       <Typography variant="h4" component="h2" gutterBottom align="center">
         Productos Más Vendidos
       </Typography>
       <Grid container spacing={4}>
-        {[1, 2, 3, 4].map((product) => (
-          <Grid item xs={12} sm={6} md={3} key={product}>
+        {bestSellers.map((product, index) => (
+          <Grid item xs={12} sm={6} md={3} key={index}>
             <Box
               sx={{
                 border: '1px solid #ddd',
                 borderRadius: 2,
                 padding: 2,
                 textAlign: 'center',
+                height: '100%', // Asegura que el contenedor ocupe el espacio completo
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
               }}
             >
-              <img src={`https://via.placeholder.com/150`} alt={`Producto ${product}`} style={{ width: '100%', borderRadius: '8px' }} />
+              <img
+                src={product.image}
+                alt={product.name}
+                style={{
+                  width: '100%',
+                  height: '200px', // Altura fija para las imágenes
+                  objectFit: 'cover', // Ajusta la imagen sin distorsionarla
+                  borderRadius: '8px',
+                }}
+              />
               <Typography variant="h6" gutterBottom>
-                Producto {product}
+                {product.name}
               </Typography>
               <Button variant="contained" color="primary">
-                Comprar
+                Ver
               </Button>
             </Box>
           </Grid>
@@ -79,7 +113,6 @@ function BestSellersSection() {
     </Container>
   );
 }
-
 // Sección de Contacto y Cotización
 function ContactSection() {
   return (
@@ -104,6 +137,17 @@ function ContactSection() {
             <Typography variant="body1">Email: contacto@ecommerce.com</Typography>
             <Typography variant="body1">Teléfono: +56 9 1234 5678</Typography>
             <Typography variant="body1">Dirección: Calle Falsa 123, Ciudad, País</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+              <img
+                src="https://ecoplastics.store/wp-content/uploads/2022/09/logo_ecoplas_09-01.png"
+                alt="Logo ecoplastics"
+                style={{
+                  maxWidth: '50%', // Hace que la imagen nunca sea más grande que su contenedor
+                  height: 'auto', // Ajusta la altura automáticamente según el ancho
+                  borderRadius: '8px',
+                }}
+              />
+            </Box>
           </Grid>
         </Grid>
       </Container>
