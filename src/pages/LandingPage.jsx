@@ -2,6 +2,10 @@ import React from 'react';
 import { Container, Typography, Box, Grid, TextField, Button } from '@mui/material';
 import Carousel from 'react-material-ui-carousel'; // Asegúrate de instalar react-material-ui-carousel
 import logoEco from '../assets/logoeco.png';
+import slider1 from '../assets/carousel/slider1.png';
+import slider2 from '../assets/carousel/slider2.png';
+import slider3 from '../assets/carousel/slider3.png';
+import slider4 from '../assets/carousel/slider4.png';
 
 // Sección del Carrusel
 function CarouselSection() {
@@ -10,12 +14,16 @@ function CarouselSection() {
       image: logoEco,
     },
     {
-      image: 'https://img.huffingtonpost.es/files/image_720_480/uploads/2023/04/24/envases-de-plastico-de-diferentes-tamanos.jpeg',
-      title: 'Todo tipo de plasticos para tus alimentos🤤🤤',
+      image: slider1,
     },
     {
-      image: 'https://evaldistribuidora.cl/wp-content/uploads/2022/07/Envase-aluminio-rect.-v-95-scaled.jpg',
-      title: 'Variedad de productos para tu hogar🏠',
+      image: slider2,
+    },
+    {
+      image: slider3,
+    },
+    {
+      image: slider4,
     },
   ];
 
@@ -58,6 +66,39 @@ function CarouselSection() {
         ))}
       </Carousel>
     </Box>
+  );
+}
+
+
+function BuyOption() {
+  return (
+    <Container>
+      <Box
+        sx={{
+          mt: 10,
+          mb: 8,
+          display: 'flex',         // Utiliza flexbox
+          justifyContent: 'center', // Centra horizontalmente
+          alignItems: 'center',     // Centra verticalmente
+          height: '1vh',          // Altura del viewport para centrar verticalmente
+        }}
+      >
+        <Button variant="contained" color="primary" href="/products" sx={{
+            padding: '20px 40px',       // Aumenta el padding para agrandar el botón
+            fontSize: '24px',           // Aumenta el tamaño del texto del botón
+            borderRadius: '8px',        // Cambia el radio del borde (opcional)
+            boxShadow: 10,               // Añade sombra para resaltar el botón
+            transition: 'transform 0.3s, background-color 0.3s', // Transiciones para hover
+            '&:hover': {
+              backgroundColor: '#388e3c', // Color de fondo en hover
+              transform: 'scale(1.05)',   // Aumenta el tamaño en hover
+            },
+          }}
+        >
+          Compra aquí
+        </Button>
+      </Box>
+    </Container>
   );
 }
 
@@ -116,7 +157,7 @@ function BestSellersSection() {
 // Sección de Contacto y Cotización
 function ContactSection() {
   return (
-    <Box sx={{ backgroundColor: '#f4f4f4', py: 8 }}>
+    <Box sx={{ backgroundColor: '#f4f4f4', py: 8, borderRadius: '20px' }}>
       <Container>
         <Typography variant="h4" component="h2" gutterBottom align="center">
           Contáctanos y Cotiza
@@ -160,6 +201,7 @@ function LandingPage() {
   return (
     <>
       <CarouselSection />
+      <BuyOption />
       <BestSellersSection />
       <ContactSection />
     </>

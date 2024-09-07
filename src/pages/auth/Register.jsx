@@ -1,14 +1,14 @@
 import React from 'react';
 import { Container, Grid, TextField, Button, Typography, Box, Link } from '@mui/material';
-
+import logo from '../../assets/logosintext.png';
 const Register = () => {
   return (
-    <Container maxWidth="md" sx={{ marginTop: '80px' }}>
-      <Grid container spacing={2}>
+    <Container maxWidth="md" sx={{ display: 'flex', justifyContent: 'center', height: '100vh', alignItems: 'center' }}>
+      <Grid container spacing={4} sx={{ boxShadow: 10, borderRadius: 10, padding: 4 }}>
         {/* Columna izquierda: Formulario de registro */}
         <Grid item xs={12} md={6}>
           <Typography variant="h4" gutterBottom>
-            Crear Cuenta
+            Registrate 👋
           </Typography>
           <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }}>
             <TextField
@@ -62,20 +62,17 @@ const Register = () => {
         </Grid>
 
         {/* Columna derecha: Imagen representativa */}
-        <Grid
-          item
-          xs={12}
-          md={6}
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <img
-            src="https://via.placeholder.com/400"
-            alt="Imagen representativa de la empresa"
-            style={{ maxWidth: '100%', height: 'auto' }}
+        <Grid item xs={12} md={6}>
+          <Box
+            sx={{
+              backgroundImage: `url(${logo})`,  // Corrección aquí: `url()` con template literals
+              backgroundSize: 'contain',        // Cambia a 'contain' o 'cover' según tu preferencia
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',    // Añadido para evitar repeticiones
+              height: '100%',                   // Mantén la altura completa del contenedor
+              borderRadius: 10,
+              minHeight: 300,                   // Añadido para asegurar que siempre tenga una altura mínima
+            }}
           />
         </Grid>
       </Grid>

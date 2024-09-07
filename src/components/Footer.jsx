@@ -13,8 +13,9 @@ function Footer() {
         py: 4,
         px: 2,
         mt: 'auto',
+        borderRadius: '20px',
         backgroundColor: (theme) =>
-          theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[800],
+          theme.palette.mode === 'light' ? theme.palette.grey[300] : theme.palette.grey[800],
       }}
     >
       <Container maxWidth="lg">

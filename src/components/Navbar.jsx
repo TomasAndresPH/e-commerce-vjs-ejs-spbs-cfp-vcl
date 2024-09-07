@@ -8,7 +8,7 @@ const Navbar = () => {
     <AppBar
       position="fixed"
       sx={{
-        boxShadow: 0,
+        boxShadow: 10,
         backgroundImage: 'linear-gradient(to right, #0d7510, #0aa30e)', // Degradado de izquierda a derecha
         padding: '0 20px', // Añadido padding para la consistencia
         borderBottomLeftRadius: '20px', // Valor para redondear esquina inferior izquierda

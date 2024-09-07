@@ -3,12 +3,25 @@ import { Container, Grid, Card, CardContent, CardMedia, Typography, Button, Chec
 
 // Ejemplo de un conjunto de datos para productos
 const productData = [
-  { id: 1, name: 'Camiseta', price: 25, category: 'ropa', image: 'link-a-imagen1' },
-  { id: 2, name: 'Zapatos', price: 80, category: 'Calzado', image: 'link-a-imagen2' },
-  { id: 3, name: 'Reloj', price: 120, category: 'Accesorios', image: 'link-a-imagen3' },
-  { id: 4, name: 'Pantalón', price: 50, category: 'Ropa', image: 'link-a-imagen4' },
-  { id: 5, name: 'Gorra', price: 20, category: 'Accesorios', image: 'link-a-imagen5' },
-  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'link-a-imagen6' }
+  { id: 1, name: 'Camiseta', price: 25, category: 'ropa', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+  { id: 2, name: 'Zapatos', price: 80, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+  { id: 3, name: 'Reloj', price: 120, category: 'Accesorios', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+  { id: 4, name: 'Pantalón', price: 50, category: 'Ropa', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+  { id: 5, name: 'Gorra', price: 20, category: 'Accesorios', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
 ];
 
 const Products = () => {
@@ -47,8 +60,8 @@ const Products = () => {
       }}
     >
       
-      <Box sx={{ width: '20%', p: 2, marginRight: 4 }}>
-        <Typography variant="h6">Categorías</Typography>
+      <Box sx={{ width: '20%', p: 2, marginRight: 4, boxShadow: 10, borderRadius: '20px' }}>
+        <Typography variant="h5" sx={{fontWeight: 'bold'}}>Categorías</Typography>
         <FormControlLabel
           control={<Checkbox checked={selectedCategories.Plasticos} onChange={handleCategoryChange} name="Plasticos" />}
           label="Plasticos"
@@ -75,8 +88,8 @@ const Products = () => {
           max={150}
           sx={{ color: 'primary.main' }} // Color del slider personalizado
         />
-        <Button variant="contained" color="primary" sx={{ display: 'block', mb: 2 }}>Aplicar filtros</Button>
-        <Button variant="outlined" color="primary" sx={{ display: 'block' }}>Limpiar filtros</Button>
+        <Button variant="contained" color="primary" fullWidth sx={{ display: 'flex', mb: 2, width: '100%' }}>Aplicar filtros</Button>
+        <Button variant="outlined" color="primary" fullWidth sx={{ display: 'flex', width: '100%' }}>Limpiar filtros</Button>
       </Box>
 
       {/* Listado de productos en la parte derecha */}
