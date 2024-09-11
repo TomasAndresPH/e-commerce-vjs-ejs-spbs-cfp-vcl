@@ -1,32 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Grid, Card, CardContent, CardMedia, Typography, Button, Checkbox, FormControlLabel, Box, Slider } from '@mui/material';
-
+import { getAllProducts } from '../apiService'; // Importar el servicio de la API
+import img_product from '../assets/products/default.png'
 // Ejemplo de un conjunto de datos para productos
-const productData = [
-  { id: 1, name: 'Camiseta', price: 25, category: 'ropa', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-  { id: 2, name: 'Zapatos', price: 80, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-  { id: 3, name: 'Reloj', price: 120, category: 'Accesorios', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-  { id: 4, name: 'Pantalón', price: 50, category: 'Ropa', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-  { id: 5, name: 'Gorra', price: 20, category: 'Accesorios', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-  { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-];
+// const productData = [
+//   { id: 1, name: 'Camiseta', price: 25, category: 'ropa', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+//   { id: 2, name: 'Zapatos', price: 80, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+//   { id: 3, name: 'Reloj', price: 120, category: 'Accesorios', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+//   { id: 4, name: 'Pantalón', price: 50, category: 'Ropa', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+//   { id: 5, name: 'Gorra', price: 20, category: 'Accesorios', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+//   { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+//   { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+//   { id: 6, name: 'Zapatillas', price: 90, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
+// ];
 
 const Products = () => {
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(1000);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [priceRange, setPriceRange] = useState([0, 100]); // Estado para el slider
   const [selectedCategories, setSelectedCategories] = useState({
     Plasticos: false,
@@ -34,6 +25,32 @@ const Products = () => {
     Papeleria: false,
     Material: false,
   });
+
+  // Obtener los productos cuando el componente se monte
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await getAllProducts(); // Llamar a la API
+        setProducts(data); // Guardar los productos en el estado
+        setLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  // Mostrar un spinner de carga mientras se cargan los productos
+  if (loading) {
+    return <p>Cargando productos...</p>;
+  }
+
+  // Mostrar un mensaje de error si hay un problema al cargar los productos
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
 
   // Filtro por categorías
   const handleCategoryChange = (event) => {
@@ -93,32 +110,34 @@ const Products = () => {
       </Box>
 
       {/* Listado de productos en la parte derecha */}
-      <Grid container spacing={4} sx={{ flexGrow: 1 }}>
-        {productData.map((product) => (
-          <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
-            <Card sx={{ height: '100%' }}>
-              <CardMedia
-                component="img"
-                height="200"
-                image={product.image}
-                alt={product.name}
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  {product.name}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  ${product.price}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {product.category}
-                </Typography>
-                <Button variant="contained" color="primary" sx={{ marginTop: 2 }}>Añadir al carrito</Button>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+      <Grid container spacing={4} sx={{ padding: 4 }}>
+      {products.map((product) => (
+        <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
+          <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <CardMedia
+              component="img"
+              height="200"
+              image={img_product}
+              alt={product.name}
+            />
+            <CardContent sx={{ flexGrow: 1 }}>
+              <Typography gutterBottom variant="h5" component="div">
+                {product.name}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                ${product.price}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {product.category}
+              </Typography>
+              <Button variant="contained" color="primary" sx={{ marginTop: 2 }}>
+                Añadir al carrito
+              </Button>
+            </CardContent>
+          </Card>
+        </Grid>
+      ))}
+    </Grid>
     </Container>
   );
 };

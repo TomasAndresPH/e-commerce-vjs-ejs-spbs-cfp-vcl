@@ -175,9 +175,10 @@ function ContactSection() {
             <Typography variant="h6" gutterBottom>
               Información de Contacto
             </Typography>
-            <Typography variant="body1">Email: contacto@ecommerce.com</Typography>
-            <Typography variant="body1">Teléfono: +56 9 1234 5678</Typography>
-            <Typography variant="body1">Dirección: Calle Falsa 123, Ciudad, País</Typography>
+            <Typography variant="body1">Email: ventas@ecoplastics.cl</Typography>
+            <Typography variant="body1">Tel. 1: 22 774 33 56</Typography>
+            <Typography variant="body1">Tel. 2: 22 505 38 83</Typography>
+            <Typography variant="body1">Dirección: Molina Lavín 01691, Quinta Normal, RM</Typography>
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
               <img
                 src="https://ecoplastics.store/wp-content/uploads/2022/09/logo_ecoplas_09-01.png"

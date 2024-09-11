@@ -47,28 +47,21 @@ function Footer() {
             <Typography variant="h6" gutterBottom>
               Contacto
             </Typography>
-            <Typography variant="body2">Email: contacto@ecommerce.com</Typography>
-            <Typography variant="body2">Teléfono: +56 9 1234 5678</Typography>
-            <Typography variant="body2">Dirección: Calle Falsa 123, Ciudad, País</Typography>
+            <Typography variant="body2">Molina Lavín 01691</Typography>
+            <Typography variant="body2">Quinta Normal, RM</Typography>
+            <Typography variant="body2">ventas@ecoplastics.cl</Typography>
+            <Typography variant="body2">Tel. 1: 22 774 33 56</Typography>
+            <Typography variant="body2">Tel. 2: 22  505 38 83</Typography>
           </Grid>
 
           {/* Redes Sociales */}
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={4} sx={{display: 'flex', alignItems:'center'}}>
             <Typography variant="h6" gutterBottom>
               Síguenos
             </Typography>
             <Box>
-              <IconButton color="inherit" href="https://www.facebook.com" target="_blank">
+              <IconButton color="inherit" href="https://web.facebook.com/profile.php?id=100080467056190&locale=es_LA" target="_blank">
                 <FacebookIcon />
-              </IconButton>
-              <IconButton color="inherit" href="https://www.twitter.com" target="_blank">
-                <TwitterIcon />
-              </IconButton>
-              <IconButton color="inherit" href="https://www.instagram.com" target="_blank">
-                <InstagramIcon />
-              </IconButton>
-              <IconButton color="inherit" href="https://www.linkedin.com" target="_blank">
-                <LinkedInIcon />
               </IconButton>
             </Box>
           </Grid>
@@ -77,7 +70,7 @@ function Footer() {
         {/* Copyright */}
         <Box mt={4} textAlign="center">
           <Typography variant="body2" color="textSecondary">
-            © {new Date().getFullYear()} E-commerce App. Todos los derechos reservados.
+            © {new Date().getFullYear()} Ecoplastic App. Todos los derechos reservados. Desarrollado por <Link href="https://www.linkedin.com/in/tom%C3%A1s-andr%C3%A9s-ph/" color="inherit" underline="hover">Tomás Andrés</Link>.
           </Typography>
         </Box>
       </Container>
