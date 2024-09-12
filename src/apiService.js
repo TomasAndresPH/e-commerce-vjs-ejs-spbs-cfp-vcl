@@ -1,8 +1,5 @@
-// src/apiService.js
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Obtener la URL base desde las variables de entorno
-
-// Función para obtener todos los productos
 export const getAllProducts = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/products`);
@@ -16,7 +13,6 @@ export const getAllProducts = async () => {
   }
 };
 
-// Función para obtener un producto por ID
 export const getProductById = async (id) => {
   try {
     const response = await fetch(`${API_BASE_URL}/products/${id}`);
@@ -26,6 +22,53 @@ export const getProductById = async (id) => {
     return await response.json();
   } catch (error) {
     console.error('Error en getProductById:', error);
+    throw error;
+  }
+};
+
+export const register = async (userData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Error en el registro');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error en register:', error);
+    throw error;
+  }
+};
+
+export const login = async (credentials) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credentials),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Error en el inicio de sesión');
+    }
+
+    if (!data.user) {
+      throw new Error('Respuesta de login inválida: no se recibieron datos de usuario');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error en login:', error);
     throw error;
   }
 };

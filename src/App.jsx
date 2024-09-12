@@ -1,4 +1,4 @@
-import React from 'react';
+import {React, useState, useEffect} from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -7,6 +7,8 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Products from './pages/Products';
 import Checkout from './pages/Checkout';
+
+import { UserProvider } from './pages/auth/context/userContext.jsx';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Box } from '@mui/material';  // Añadimos el componente Box de Material UI
@@ -23,32 +25,39 @@ const theme = createTheme({
 });
 
 function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Intenta cargar el usuario desde localStorage al iniciar la app
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+    // Aquí puedes añadir cualquier otra lógica de cierre de sesión
+  };
+
   return (
     <ThemeProvider theme={theme}>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100vh', // Garantiza que la altura mínima sea igual a la altura de la ventana
-        }}
-      >
-        {/* Navbar */}
-        <Navbar />
-
-        {/* Contenido principal */}
-        <Box sx={{ flexGrow: 1, p: 3 }}>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/checkout" element={<Checkout />} />
-          </Routes>
+      <UserProvider>
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+          <Navbar />
+          <Box sx={{ flexGrow: 1, p: 3 }}>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/checkout" element={<Checkout />} />
+            </Routes>
+          </Box>
+          <Footer />
         </Box>
-
-        {/* Footer siempre al final */}
-        <Footer />
-      </Box>
+      </UserProvider>
     </ThemeProvider>
   );
 }

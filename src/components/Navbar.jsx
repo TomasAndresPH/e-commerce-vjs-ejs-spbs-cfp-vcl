@@ -1,9 +1,41 @@
-import React from 'react';
-import { AppBar, Toolbar, TextField, IconButton, Button, Box } from '@mui/material';
+import React, { useContext, useState } from 'react';
+import { AppBar, Toolbar, TextField, Button, Box, Typography, IconButton, Avatar, Menu, MenuItem } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../pages/auth/context/userContext.jsx';
+import avatar from '../assets/logoeco.png';
 
 const Navbar = () => {
+
+  const navigate = useNavigate();
+  const { user, logout } = useContext(UserContext);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleMenuItemClick = (path) => {
+    navigate(path);
+    handleMenuClose();
+  };
+
+  const handleLogout = () => {
+    logout();
+    handleMenuClose();
+    handleMenuItemClick('/');
+  };
+
+  const truncateName = (name) => {
+    return name.length > 8 ? name.substring(0, 8) : name;
+  };
+
   return (
     <AppBar
       position="fixed"
@@ -58,26 +90,35 @@ const Navbar = () => {
               }}
             />
           </Box>
-
-          {/* Botón de Ingresar con estilo en blanco */}
-          <Button href="/login"
-            variant="outlined"
-            sx={{
-              borderColor: 'white', // Borde en blanco
-              color: 'white', // Texto en blanco
-              '&:hover': {
-                borderColor: 'white', // Borde en blanco al hacer hover
-                backgroundColor: 'rgba(255, 255, 255, 0.1)', // Fondo semi-transparente al hacer hover
-              },
-            }}
-          >
-            Ingresar
-          </Button>
-
           {/* Botón del carrito de compras */}
-          <IconButton color="inherit">
+          <IconButton color='inherit'>
             <ShoppingCartIcon />
           </IconButton>
+          <Box>
+            <Avatar
+              src={avatar}
+              onClick={handleMenuOpen}
+              sx={{ cursor: 'pointer' }}
+            />
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              {user ? (
+                [
+                  <MenuItem key="profile" onClick={() => handleMenuItemClick('/profile')}>Perfil</MenuItem>,
+                  <MenuItem key="orders" onClick={() => handleMenuItemClick('/orders')}>Pedidos</MenuItem>,
+                  <MenuItem key="logout" onClick={handleLogout} >Logout</MenuItem>
+                ]
+              ) : (
+                [
+                  <MenuItem key="login" onClick={() => handleMenuItemClick('/login')}>Iniciar sesión</MenuItem>,
+                  <MenuItem key="register" onClick={() => handleMenuItemClick('/register')}>Registrarse</MenuItem>
+                ]
+              )}
+            </Menu>
+          </Box>
         </Box>
       </Toolbar>
     </AppBar>
