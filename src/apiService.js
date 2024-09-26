@@ -1,5 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
+//Obtener todos los productos, esto se usa en la pagina de productos
 export const getAllProducts = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/products`);
@@ -12,7 +12,9 @@ export const getAllProducts = async () => {
     throw error;
   }
 };
-
+//Obtener un producto en especifico, esto no se esta usando actualmente, pero lo dejo por si se necesita en un futuro cuando se habra un producto en especifico,
+//esto no se si dejarlo asi ya que involucra dos llamados al backend, lo cual quizas no sea necesario, quizas sea mejor guardar los productos en una varaible
+//para no llamar al backend tantas veces.
 export const getProductById = async (id) => {
   try {
     const response = await fetch(`${API_BASE_URL}/products/${id}`);
@@ -25,7 +27,7 @@ export const getProductById = async (id) => {
     throw error;
   }
 };
-
+//componente clave para la fase de registros
 export const register = async (userData) => {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
@@ -45,7 +47,7 @@ export const register = async (userData) => {
     throw error;
   }
 };
-
+//componente clave para la fase de login
 export const login = async (credentials) => {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {

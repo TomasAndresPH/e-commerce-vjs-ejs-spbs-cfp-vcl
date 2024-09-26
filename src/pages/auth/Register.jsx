@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Container, Grid, TextField, Button, Typography, Box, Link } from '@mui/material';
 import logo from '../../assets/logosintext.png';
-import { register } from '../../apiService';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+//uso del backend
+import { register } from '../../apiService';
+
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -21,6 +23,7 @@ const Register = () => {
     setError('');
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden');
+      toast.error('Las contaseñas no coinciden');
       return;
     }
     try {
@@ -32,6 +35,7 @@ const Register = () => {
       toast.error('Error en el proceso de registro. Por favor, intenta de nuevo.');
     }
   };
+  
 
   return (
     <Container maxWidth="md" sx={{ display: 'flex', justifyContent: 'center', height: '100vh', alignItems: 'center' }}>
@@ -120,7 +124,7 @@ const Register = () => {
         <Grid item xs={12} md={6}>
           <Box
             sx={{
-              backgroundImage: `url(${logo})`,
+              backgroundImage:  `url(${logo})`, //antes era 'url(https://source.unsplash.com/random)'
               backgroundSize: 'contain',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',

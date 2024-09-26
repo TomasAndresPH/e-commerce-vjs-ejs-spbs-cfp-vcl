@@ -1,3 +1,4 @@
+//todo lo que es front
 import {React, useState, useEffect} from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
@@ -7,39 +8,44 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Products from './pages/Products';
 import Checkout from './pages/Checkout';
-
+//conexion con backend
 import { UserProvider } from './pages/auth/context/userContext.jsx';
-
+//apartado de diseño
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Box } from '@mui/material';  // Añadimos el componente Box de Material UI
-
+//seleccion de colores para la pagina
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#227C00', // Verde oscuro
+      main: '#227C00', // Verde oscuro, este es el que se esta usando en los botones
     },
     secondary: {
-      main: '#ffffff', // Blanco
+      main: '#ffffff', // Blanco, de momento no se esta usando
     },
   },
 });
 
 function App() {
-  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    // Intenta cargar el usuario desde localStorage al iniciar la app
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+  //LA LOGICA COMENTA A CONTINUACION, FUE MOVIDA A userContext.jsx dentro de pages/auth/context
+  // const [user, setUser] = useState(null);
 
-  const handleLogout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
-    // Aquí puedes añadir cualquier otra lógica de cierre de sesión
-  };
+  // useEffect(() => {
+  //   // Intenta cargar el usuario desde localStorage al iniciar la app
+  //   const storedUser = localStorage.getItem('user');
+  //   if (storedUser) {
+  //     setUser(JSON.parse(storedUser));
+  //   }
+  // }, []);
+
+
+  // //aca esto hay un error, en el userContext.jsx se llama a logout, pero en el app.js se llama a handleLogout,
+  // //tengo que comprobar cual de estos esta realmente haciando la funcion de cerrar sesion.
+  // const handleLogout = () => {
+  //   setUser(null);
+  //   localStorage.removeItem('user');
+  //   // Aquí puedes añadir cualquier otra lógica de cierre de sesión
+  // };
 
   return (
     <ThemeProvider theme={theme}>
