@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Grid, Card, CardContent, CardMedia, Typography, Button, Checkbox, FormControlLabel, Box, Slider } from '@mui/material';
+import { Container, Grid, Card, CardContent, CardMedia, Typography, Button, Checkbox, FormControlLabel, Box, Slider, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import img_product from '../assets/products/default.png'
 //llamando al backend para obtener los productos
 import { getAllProducts } from '../apiService'; // Importar el servicio de la API
+
+import { useCart } from './auth/context/cartContext.jsx';
 
 
 // Ejemplo de un conjunto de datos para productos
@@ -23,6 +25,12 @@ const Products = () => {
     Papeleria: false,
     Material: false,
   });
+
+  const { addToCart } = useCart();
+
+  // Estado para controlar el diálogo y el producto seleccionado
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   // Obtener los productos cuando el componente se monte
   useEffect(() => {
@@ -49,6 +57,18 @@ const Products = () => {
   if (error) {
     return <p>Error: {error}</p>;
   }
+
+  // Abrir el diálogo con el producto seleccionado
+  const handleOpenDialog = (product) => {
+    setSelectedProduct(product);
+    setOpenDialog(true);
+  };
+
+  // Cerrar el diálogo
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedProduct(null);
+  };
 
   // Filtro por categorías
   const handleCategoryChange = (event) => {
@@ -128,14 +148,40 @@ const Products = () => {
               <Typography variant="body2" color="text.secondary">
                 {product.category}
               </Typography>
-              <Button variant="contained" color="primary" sx={{ marginTop: 2 }}>
+              <Button variant="contained" color="primary" sx={{ marginTop: 2 }} onClick={() => addToCart(product)}>
                 Añadir al carrito
+              </Button>
+              {/* Botón para ver detalles */}
+              <Button variant="contained" color="primary" sx={{ marginTop: 2 }} onClick={() => handleOpenDialog(product)}>
+                Ver detalles
               </Button>
             </CardContent>
           </Card>
         </Grid>
       ))}
     </Grid>
+    {/* Diálogo para mostrar los detalles del producto */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+          {selectedProduct && (
+            <>
+              <DialogTitle>{selectedProduct.name}</DialogTitle>
+              <DialogContent>
+                <img src={img_product} alt={selectedProduct.name} style={{ width: '100%', marginBottom: '20px' }} />
+                <Typography variant="body1">Categoría: {selectedProduct.category}</Typography>
+                <Typography variant="body1">Precio: ${selectedProduct.price}</Typography>
+                <Typography variant="body2" color="textSecondary" sx={{ marginTop: '10px' }}>
+                  {/* Aquí puedes añadir más detalles del producto */}
+                  Descripción del producto...
+                </Typography>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleCloseDialog} color="primary">
+                  Cerrar
+                </Button>
+              </DialogActions>
+            </>
+          )}
+      </Dialog>
     </Container>
   );
 };

@@ -8,8 +8,11 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Products from './pages/Products';
 import Checkout from './pages/Checkout';
+import Orders from './pages/Orders';
+import Profile from './pages/auth/Profile.jsx';
 //conexion con backend
 import { UserProvider } from './pages/auth/context/userContext.jsx';
+import { CartProvider } from './pages/auth/context/cartContext.jsx';
 //apartado de diseño
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Box } from '@mui/material';  // Añadimos el componente Box de Material UI
@@ -49,6 +52,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <CartProvider>
       <UserProvider>
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
           <Navbar />
@@ -59,11 +63,14 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/products" element={<Products />} />
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/profile" element={<Profile />} />
             </Routes>
           </Box>
           <Footer />
         </Box>
       </UserProvider>
+      </CartProvider>
     </ThemeProvider>
   );
 }

@@ -1,12 +1,18 @@
-import React from 'react';
+import {React, useContext} from 'react';
 import { Container, Typography, Box, Grid, TextField, Button } from '@mui/material';
 import Carousel from 'react-material-ui-carousel'; // Asegúrate de instalar react-material-ui-carousel
+
+// Componentes
+import RecommendedProducts from '../components/rcmProducts/RecommendP';
+import ChatBot from '../components/chatbot/ChatBot';
+import { UserContext } from './auth/context/userContext';
+
+//visuals
 import logoEco from '../assets/logoeco.png';
 import slider1 from '../assets/carousel/slider1.png';
 import slider2 from '../assets/carousel/slider2.png';
 import slider3 from '../assets/carousel/slider3.png';
 import slider4 from '../assets/carousel/slider4.png';
-
 // Sección del Carrusel
 function CarouselSection() {
   const items = [
@@ -102,9 +108,9 @@ function BuyOption() {
   );
 }
 
-function BestSellersSection() {
+function MostVendidos() {
   // Array de productos más vendidos
-  const bestSellers = [
+  const mas_vendidos = [
     { name: 'Plasticos', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
     { name: 'Aluminios', image: 'https://distribuidoratodoinsumos.cl/wp-content/uploads/2023/05/ti-219.jpg' },
     { name: 'Papeleria', image: 'https://img.freepik.com/fotos-premium/utensilios-papel-ecologicos_89381-3383.jpg' },
@@ -117,7 +123,7 @@ function BestSellersSection() {
         Productos Más Vendidos
       </Typography>
       <Grid container spacing={4}>
-        {bestSellers.map((product, index) => (
+        {mas_vendidos.map((product, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
             <Box
               sx={{
@@ -155,7 +161,7 @@ function BestSellersSection() {
   );
 }
 // Sección de Contacto y Cotización
-function ContactSection() {
+function Contact() {
   return (
     <Box sx={{ backgroundColor: '#f4f4f4', py: 8, borderRadius: '20px' }}>
       <Container>
@@ -199,12 +205,15 @@ function ContactSection() {
 
 // Componente Principal de Landing Page
 function LandingPage() {
+  const { user } = useContext(UserContext);
   return (
     <>
+      <ChatBot />
       <CarouselSection />
       <BuyOption />
-      <BestSellersSection />
-      <ContactSection />
+      {user && <RecommendedProducts />}
+      <MostVendidos />
+      <Contact />
     </>
   );
 }

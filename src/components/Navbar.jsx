@@ -1,10 +1,12 @@
+//navbar
 import React, { useContext, useState } from 'react';
-import { AppBar, Toolbar, TextField, Button, Box, Typography, IconButton, Avatar, Menu, MenuItem } from '@mui/material';
+import { AppBar, Toolbar, TextField, Button, Badge, Box, Typography, IconButton, Avatar, Menu, MenuItem, Popover, List, ListItem, ListItemText } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../pages/auth/context/userContext.jsx';
+import { useCart } from '../pages/auth/context/cartContext.jsx';
 import avatar from '../assets/logoeco.png';
 
 const Navbar = () => {
@@ -12,6 +14,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { user, logout } = useContext(UserContext);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [cartAnchorEl, setCartAnchorEl] = useState(null);
+  const { cart } = useCart();
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -26,15 +30,31 @@ const Navbar = () => {
     handleMenuClose();
   };
 
+  const handleCartOpen = (event) => {
+    setCartAnchorEl(event.currentTarget);
+  };
+
+  const handleCartClose = () => {
+    setCartAnchorEl(null);
+  };
+
   const handleLogout = () => {
     logout();
     handleMenuClose();
     handleMenuItemClick('/');
   };
 
-  const truncateName = (name) => {
-    return name.length > 8 ? name.substring(0, 8) : name;
+  // const truncateName = (name) => {
+  //   return name.length > 8 ? name.substring(0, 8) : name;
+  // };
+
+  const handleProceedToCheckout = () => {
+    handleCartClose();
+    navigate('/checkout');
   };
+
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <AppBar
@@ -91,9 +111,50 @@ const Navbar = () => {
             />
           </Box>
           {/* Botón del carrito de compras */}
-          <IconButton color='inherit'>
-            <ShoppingCartIcon />
+          <IconButton color='inherit' onClick={handleCartOpen}>
+            <Badge badgeContent={totalItems} color="secondary">
+              <ShoppingCartIcon />
+            </Badge>
           </IconButton>
+          {/* Popover del carrito */}
+          <Popover
+              open={Boolean(cartAnchorEl)}
+              anchorEl={cartAnchorEl}
+              onClose={handleCartClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              <Box sx={{ p: 2, width: 300 }}>
+                <Typography variant="h6" gutterBottom>Carrito de Compras</Typography>
+                <List>
+                  {cart.map((item) => (
+                    <ListItem key={item.id}>
+                      <ListItemText 
+                        primary={item.name} 
+                        secondary={`Cantidad: ${item.quantity} - Precio: $${(item.price * item.quantity).toFixed(2)}`} 
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+                <Typography variant="subtitle1">Total: ${totalPrice.toFixed(2)}</Typography>
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  fullWidth 
+                  onClick={handleProceedToCheckout}
+                  sx={{ mt: 2 }}
+                >
+                  Proceder al Pago
+                </Button>
+              </Box>
+          </Popover>
+          {/* Menú de usuario */}
           <Box>
             <Avatar
               src={avatar}
