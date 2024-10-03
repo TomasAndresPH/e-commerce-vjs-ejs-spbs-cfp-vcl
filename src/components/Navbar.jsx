@@ -5,14 +5,14 @@ import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
-import { UserContext } from '../pages/auth/context/userContext.jsx';
-import { useCart } from '../pages/auth/context/cartContext.jsx';
+import { useUser } from '../context/userContext.jsx';
+import { useCart } from '../context/cartContext.jsx';
 import avatar from '../assets/logoeco.png';
 
 const Navbar = () => {
 
   const navigate = useNavigate();
-  const { user, logout } = useContext(UserContext);
+  const { user, logout } = useUser();
   const [anchorEl, setAnchorEl] = useState(null);
   const [cartAnchorEl, setCartAnchorEl] = useState(null);
   const { cart } = useCart();

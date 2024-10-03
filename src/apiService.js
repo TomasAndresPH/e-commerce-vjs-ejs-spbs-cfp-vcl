@@ -74,3 +74,50 @@ export const login = async (credentials) => {
     throw error;
   }
 };
+
+// Nuevas funciones para órdenes
+export const createOrder = async (orderData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/orders`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(orderData),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Error al crear la orden');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error en createOrder:', error);
+    throw error;
+  }
+};
+
+export const getOrdersByCustomer = async (customerId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/orders/customer/${customerId}`);
+    if (!response.ok) {
+      throw new Error('Error al obtener las órdenes del cliente');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error en getOrdersByCustomer:', error);
+    throw error;
+  }
+};
+
+export const getOrderById = async (orderId) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/orders/${orderId}`);
+    if (!response.ok) {
+      throw new Error('Error al obtener la orden');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error en getOrderById:', error);
+    throw error;
+  }
+};

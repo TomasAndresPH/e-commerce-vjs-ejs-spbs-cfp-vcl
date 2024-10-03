@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Container, Typography, Box, Button, Grid, TextField, Alert } from '@mui/material';
-import { UserContext } from '../pages/auth/context/userContext.jsx';
-import { useCart } from './auth/context/cartContext.jsx';
+import { useUser } from '../context/userContext.jsx';
+import { useCart } from '../context/cartContext.jsx';
 import { useNavigate } from 'react-router-dom';
 
 const CheckoutPage = () => {
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const { cart } = useCart();
   const navigate = useNavigate();
   const [showAlert, setShowAlert] = useState(!user);

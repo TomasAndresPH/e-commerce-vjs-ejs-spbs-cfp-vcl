@@ -1,6 +1,7 @@
 //todo lo que es front
 import {React, useState, useEffect} from 'react';
 import { Routes, Route } from 'react-router-dom';
+//Pages
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import LandingPage from './pages/LandingPage';
@@ -9,10 +10,11 @@ import Register from './pages/auth/Register';
 import Products from './pages/Products';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
-import Profile from './pages/auth/Profile.jsx';
-//conexion con backend
-import { UserProvider } from './pages/auth/context/userContext.jsx';
-import { CartProvider } from './pages/auth/context/cartContext.jsx';
+import Profile from './pages/Profile';
+//Customers backend
+import { UserProvider } from './context/userContext.jsx';
+import { CartProvider } from './context/cartContext.jsx';
+import { OrderProvider } from './context/orderContext.jsx';
 //apartado de diseño
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Box } from '@mui/material';  // Añadimos el componente Box de Material UI
@@ -52,25 +54,27 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <CartProvider>
       <UserProvider>
-        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-          <Navbar />
-          <Box sx={{ flexGrow: 1, p: 3 }}>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/orders" element={<Orders />} />
-              <Route path="/profile" element={<Profile />} />
-            </Routes>
-          </Box>
-          <Footer />
-        </Box>
+        <CartProvider>
+          <OrderProvider>
+            <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+              <Navbar />
+              <Box sx={{ flexGrow: 1, p: 3 }}>
+                <Routes>
+                  <Route path="/" element={<LandingPage />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/products" element={<Products />} />
+                  <Route path="/checkout" element={<Checkout />} />
+                  <Route path="/orders" element={<Orders />} />
+                  <Route path="/profile" element={<Profile />} />
+                </Routes>
+              </Box>
+              <Footer />
+            </Box>
+          </OrderProvider> 
+        </CartProvider>
       </UserProvider>
-      </CartProvider>
     </ThemeProvider>
   );
 }

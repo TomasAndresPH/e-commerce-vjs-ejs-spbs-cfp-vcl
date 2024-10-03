@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Container, Typography, Box, Button } from '@mui/material';
-import { UserContext } from './context/userContext.jsx'; // Asegúrate de que la ruta sea correcta
+import { useUser } from '../context/userContext.jsx'; // Asegúrate de que la ruta sea correcta
 
 const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
 
   useEffect(() => {
     if (user) {

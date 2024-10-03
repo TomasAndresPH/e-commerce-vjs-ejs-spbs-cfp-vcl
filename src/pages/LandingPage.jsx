@@ -5,7 +5,7 @@ import Carousel from 'react-material-ui-carousel'; // Asegúrate de instalar rea
 // Componentes
 import RecommendedProducts from '../components/rcmProducts/RecommendP';
 import ChatBot from '../components/chatbot/ChatBot';
-import { UserContext } from './auth/context/userContext';
+import { useUser } from '../context/userContext';
 
 //visuals
 import logoEco from '../assets/logoeco.png';
@@ -205,7 +205,7 @@ function Contact() {
 
 // Componente Principal de Landing Page
 function LandingPage() {
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   return (
     <>
       <ChatBot />

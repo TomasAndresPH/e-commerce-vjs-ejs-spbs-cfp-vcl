@@ -1,6 +1,10 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 
-export const UserContext = createContext();
+// Crear el UserContext
+const UserContext = createContext();
+
+// Definir el hook personalizado
+export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);

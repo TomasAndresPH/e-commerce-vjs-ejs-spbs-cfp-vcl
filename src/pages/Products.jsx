@@ -1,24 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Grid, Card, CardContent, CardMedia, Typography, Button, Checkbox, FormControlLabel, Box, Slider, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { 
+  Container, 
+  Grid, 
+  Card, 
+  CardContent, 
+  CardMedia, 
+  Typography, 
+  Button, 
+  Checkbox, 
+  FormControlLabel, 
+  Box, 
+  Slider, 
+  Dialog, 
+  DialogTitle, 
+  DialogContent, 
+  DialogActions,
+  Skeleton
+} from '@mui/material';
 import img_product from '../assets/products/default.png'
-//llamando al backend para obtener los productos
-import { getAllProducts } from '../apiService'; // Importar el servicio de la API
-
-import { useCart } from './auth/context/cartContext.jsx';
-
-
-// Ejemplo de un conjunto de datos para productos
-// const productData = [
-//   { id: 1, name: 'Camiseta', price: 25, category: 'ropa', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-//   { id: 2, name: 'Zapatos', price: 80, category: 'Calzado', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-//   { id: 3, name: 'Reloj', price: 120, category: 'Accesorios', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-// ];
+import { getAllProducts } from '../apiService';
+import { useCart } from '../context/cartContext.jsx';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [priceRange, setPriceRange] = useState([0, 100]); // Estado para el slider
+  const [priceRange, setPriceRange] = useState([0, 100]);
   const [selectedCategories, setSelectedCategories] = useState({
     Plasticos: false,
     Aluminios: false,
@@ -27,17 +34,14 @@ const Products = () => {
   });
 
   const { addToCart } = useCart();
-
-  // Estado para controlar el diálogo y el producto seleccionado
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // Obtener los productos cuando el componente se monte
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const data = await getAllProducts(); // Llamar a la API
-        setProducts(data); // Guardar los productos en el estado
+        const data = await getAllProducts();
+        setProducts(data);
         setLoading(false);
       } catch (error) {
         setError(error.message);
@@ -48,29 +52,16 @@ const Products = () => {
     fetchProducts();
   }, []);
 
-  // Mostrar un spinner de carga mientras se cargan los productos
-  if (loading) {
-    return <p>Cargando productos...</p>;
-  }
-
-  // Mostrar un mensaje de error si hay un problema al cargar los productos
-  if (error) {
-    return <p>Error: {error}</p>;
-  }
-
-  // Abrir el diálogo con el producto seleccionado
   const handleOpenDialog = (product) => {
     setSelectedProduct(product);
     setOpenDialog(true);
   };
 
-  // Cerrar el diálogo
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setSelectedProduct(null);
   };
 
-  // Filtro por categorías
   const handleCategoryChange = (event) => {
     setSelectedCategories({
       ...selectedCategories,
@@ -78,10 +69,52 @@ const Products = () => {
     });
   };
 
-  // Cambio del rango de precios en el slider
   const handlePriceChange = (event, newValue) => {
     setPriceRange(newValue);
   };
+
+  const FiltersSkeleton = () => (
+    <Box sx={{ width: '20%', p: 2, marginRight: 4, boxShadow: 10, borderRadius: '20px' }}>
+      <Skeleton variant="text" width="60%" height={40} />
+      {[...Array(4)].map((_, index) => (
+        <Box key={index} sx={{ display: 'flex', alignItems: 'center', my: 1 }}>
+          <Skeleton variant="rectangular" width={24} height={24} sx={{ mr: 1 }} />
+          <Skeleton variant="text" width="70%" />
+        </Box>
+      ))}
+      <Skeleton variant="text" width="50%" height={40} sx={{ mt: 4 }} />
+      <Skeleton variant="rectangular" height={40} sx={{ mt: 2 }} />
+      <Skeleton variant="rectangular" height={36} sx={{ mt: 2 }} />
+      <Skeleton variant="rectangular" height={36} sx={{ mt: 2 }} />
+    </Box>
+  );
+
+  const ProductsSkeleton = () => (
+    <Grid container spacing={4} sx={{ padding: 4 }}>
+      {[...Array(8)].map((_, index) => (
+        <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+          <Card sx={{ height: '100%' }}>
+            <Skeleton variant="rectangular" height={200} />
+            <CardContent>
+              <Skeleton variant="text" height={32} width="80%" />
+              <Skeleton variant="text" height={24} width="40%" />
+              <Skeleton variant="text" height={24} width="60%" />
+              <Box sx={{ mt: 2 }}>
+                <Skeleton variant="rectangular" height={36} width="100%" />
+              </Box>
+              <Box sx={{ mt: 1 }}>
+                <Skeleton variant="rectangular" height={36} width="100%" />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+      ))}
+    </Grid>
+  );
+
+  if (error) {
+    return <Typography color="error">Error: {error}</Typography>;
+  }
 
   return (
     <Container
@@ -94,93 +127,101 @@ const Products = () => {
         width: '95%',
       }}
     >
-      
-      <Box sx={{ width: '20%', p: 2, marginRight: 4, boxShadow: 10, borderRadius: '20px' }}>
-        <Typography variant="h5" sx={{fontWeight: 'bold'}}>Categorías</Typography>
-        <FormControlLabel
-          control={<Checkbox checked={selectedCategories.Plasticos} onChange={handleCategoryChange} name="Plasticos" />}
-          label="Plasticos"
-        />
-        <FormControlLabel
-          control={<Checkbox checked={selectedCategories.Aluminios} onChange={handleCategoryChange} name="Aluminios" />}
-          label="Aluminios"
-        />
-        <FormControlLabel
-          control={<Checkbox checked={selectedCategories.Papeleria} onChange={handleCategoryChange} name="Papeleria" />}
-          label="Papeleria"
-        />
-        <FormControlLabel
-          control={<Checkbox checked={selectedCategories.Material} onChange={handleCategoryChange} name="Material" />}
-          label="Material"
-        />
-
-        <Typography variant="h6" sx={{ mt: 4 }}>Rango de precios</Typography>
-        <Slider
-          value={priceRange}
-          onChange={handlePriceChange}
-          valueLabelDisplay="auto"
-          min={0}
-          max={150}
-          sx={{ color: 'primary.main' }} // Color del slider personalizado
-        />
-        <Button variant="contained" color="primary" fullWidth sx={{ display: 'flex', mb: 2, width: '100%' }}>Aplicar filtros</Button>
-        <Button variant="outlined" color="primary" fullWidth sx={{ display: 'flex', width: '100%' }}>Limpiar filtros</Button>
-      </Box>
-
-      {/* Listado de productos en la parte derecha */}
-      <Grid container spacing={4} sx={{ padding: 4 }}>
-      {products.map((product) => (
-        <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
-          <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <CardMedia
-              component="img"
-              height="200"
-              image={img_product}
-              alt={product.name}
+      {loading ? (
+        <>
+          <FiltersSkeleton />
+          <ProductsSkeleton />
+        </>
+      ) : (
+        <>
+          <Box sx={{ width: '20%', p: 2, marginRight: 4, boxShadow: 10, borderRadius: '20px' }}>
+            <Typography variant="h5" sx={{fontWeight: 'bold'}}>Categorías</Typography>
+            <FormControlLabel
+              control={<Checkbox checked={selectedCategories.Plasticos} onChange={handleCategoryChange} name="Plasticos" />}
+              label="Plasticos"
             />
-            <CardContent sx={{ flexGrow: 1 }}>
-              <Typography gutterBottom variant="h5" component="div">
-                {product.name}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                ${product.price}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {product.category}
-              </Typography>
-              <Button variant="contained" color="primary" sx={{ marginTop: 2 }} onClick={() => addToCart(product)}>
-                Añadir al carrito
-              </Button>
-              {/* Botón para ver detalles */}
-              <Button variant="contained" color="primary" sx={{ marginTop: 2 }} onClick={() => handleOpenDialog(product)}>
-                Ver detalles
-              </Button>
-            </CardContent>
-          </Card>
-        </Grid>
-      ))}
-    </Grid>
-    {/* Diálogo para mostrar los detalles del producto */}
+            <FormControlLabel
+              control={<Checkbox checked={selectedCategories.Aluminios} onChange={handleCategoryChange} name="Aluminios" />}
+              label="Aluminios"
+            />
+            <FormControlLabel
+              control={<Checkbox checked={selectedCategories.Papeleria} onChange={handleCategoryChange} name="Papeleria" />}
+              label="Papeleria"
+            />
+            <FormControlLabel
+              control={<Checkbox checked={selectedCategories.Material} onChange={handleCategoryChange} name="Material" />}
+              label="Material"
+            />
+
+            <Typography variant="h6" sx={{ mt: 4 }}>Rango de precios</Typography>
+            <Slider
+              value={priceRange}
+              onChange={handlePriceChange}
+              valueLabelDisplay="auto"
+              min={0}
+              max={150}
+            />
+            <Button variant="contained" color="primary" fullWidth sx={{ mb: 2 }}>
+              Aplicar filtros
+            </Button>
+            <Button variant="outlined" color="primary" fullWidth>
+              Limpiar filtros
+            </Button>
+          </Box>
+
+          <Grid container spacing={4} sx={{ padding: 4 }}>
+            {products.map((product) => (
+              <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
+                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={img_product}
+                    alt={product.name}
+                  />
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Typography gutterBottom variant="h5" component="div">
+                      {product.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      ${product.price}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {product.category}
+                    </Typography>
+                    <Button variant="contained" color="primary" sx={{ marginTop: 2 }} onClick={() => addToCart(product)}>
+                      Añadir al carrito
+                    </Button>
+                    <Button variant="contained" color="primary" sx={{ marginTop: 2 }} onClick={() => handleOpenDialog(product)}>
+                      Ver detalles
+                    </Button>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </>
+      )}
+
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-          {selectedProduct && (
-            <>
-              <DialogTitle>{selectedProduct.name}</DialogTitle>
-              <DialogContent>
-                <img src={img_product} alt={selectedProduct.name} style={{ width: '100%', marginBottom: '20px' }} />
-                <Typography variant="body1">Categoría: {selectedProduct.category}</Typography>
-                <Typography variant="body1">Precio: ${selectedProduct.price}</Typography>
-                <Typography variant="body2" color="textSecondary" sx={{ marginTop: '10px' }}>
-                  {/* Aquí puedes añadir más detalles del producto */}
-                  Descripción del producto...
-                </Typography>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleCloseDialog} color="primary">
-                  Cerrar
-                </Button>
-              </DialogActions>
-            </>
-          )}
+        {selectedProduct && (
+          <>
+            <DialogTitle>{selectedProduct.name}</DialogTitle>
+            <DialogContent>
+              <img src={img_product} alt={selectedProduct.name} style={{ width: '100%', marginBottom: '20px' }} />
+              <Typography variant="body1">Categoría: {selectedProduct.category}</Typography>
+              <Typography variant="body1">Precio: ${selectedProduct.price}</Typography>
+              <Typography variant="body2" color="textSecondary" sx={{ marginTop: '10px' }}>
+                Descripción del producto...
+              </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDialog} color="primary">
+                Cerrar
+              </Button>
+            </DialogActions>
+          </>
+        )}
       </Dialog>
     </Container>
   );
