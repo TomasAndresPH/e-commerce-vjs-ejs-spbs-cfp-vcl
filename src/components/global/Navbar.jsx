@@ -5,9 +5,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '../context/userContext.jsx';
-import { useCart } from '../context/cartContext.jsx';
-import avatar from '../assets/logoeco.png';
+import { useUser } from '../../context/userContext.jsx';
+import { useCart } from '../../context/cartContext.jsx';
+import CartPopover from '../carrito/CartPopover.jsx';
+import avatar from '../../assets/logoeco.png';
 
 const Navbar = () => {
 
@@ -30,6 +31,13 @@ const Navbar = () => {
     handleMenuClose();
   };
 
+  const handleLogout = () => {
+    logout();
+    handleMenuClose();
+    handleMenuItemClick('/');
+  };
+
+
   const handleCartOpen = (event) => {
     setCartAnchorEl(event.currentTarget);
   };
@@ -37,13 +45,6 @@ const Navbar = () => {
   const handleCartClose = () => {
     setCartAnchorEl(null);
   };
-
-  const handleLogout = () => {
-    logout();
-    handleMenuClose();
-    handleMenuItemClick('/');
-  };
-
   // const truncateName = (name) => {
   //   return name.length > 8 ? name.substring(0, 8) : name;
   // };
@@ -111,49 +112,21 @@ const Navbar = () => {
             />
           </Box>
           {/* Botón del carrito de compras */}
-          <IconButton color='inherit' onClick={handleCartOpen}>
+          <IconButton
+            aria-label="cart"
+            onClick={handleCartOpen}
+            color="inherit"
+          >
             <Badge badgeContent={totalItems} color="secondary">
               <ShoppingCartIcon />
             </Badge>
           </IconButton>
-          {/* Popover del carrito */}
-          <Popover
-              open={Boolean(cartAnchorEl)}
-              anchorEl={cartAnchorEl}
-              onClose={handleCartClose}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-            >
-              <Box sx={{ p: 2, width: 300 }}>
-                <Typography variant="h6" gutterBottom>Carrito de Compras</Typography>
-                <List>
-                  {cart.map((item) => (
-                    <ListItem key={item.id}>
-                      <ListItemText 
-                        primary={item.name} 
-                        secondary={`Cantidad: ${item.quantity} - Precio: $${(item.price * item.quantity).toFixed(2)}`} 
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-                <Typography variant="subtitle1">Total: ${totalPrice.toFixed(2)}</Typography>
-                <Button 
-                  variant="contained" 
-                  color="primary" 
-                  fullWidth 
-                  onClick={handleProceedToCheckout}
-                  sx={{ mt: 2 }}
-                >
-                  Proceder al Pago
-                </Button>
-              </Box>
-          </Popover>
+          <CartPopover
+            open={Boolean(cartAnchorEl)}
+            anchorEl={cartAnchorEl}
+            onClose={handleCartClose}
+            onCheckout={handleProceedToCheckout}
+          />
           {/* Menú de usuario */}
           <Box>
             <Avatar

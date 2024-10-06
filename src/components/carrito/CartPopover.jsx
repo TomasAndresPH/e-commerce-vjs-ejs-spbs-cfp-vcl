@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Popover, 
   Box, 
@@ -12,11 +13,14 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useCart } from '../context/cartContext';
+import { useCart } from '../../context/cartContext';
 
-const CartPopover = ({ anchorEl, onClose, onCheckout }) => {
+// Opción 1: Función regular
+function CartPopover({ anchorEl, onClose, onCheckout }) {
+  const navigate = useNavigate();
   const { cart, updateQuantity, removeFromCart, getCartTotal } = useCart();
   const open = Boolean(anchorEl);
+
 
   const handleUpdateQuantity = (productId, currentQuantity, change) => {
     const newQuantity = currentQuantity + change;
@@ -99,6 +103,6 @@ const CartPopover = ({ anchorEl, onClose, onCheckout }) => {
       </Box>
     </Popover>
   );
-};
+}
 
 export default CartPopover;
