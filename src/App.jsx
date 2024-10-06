@@ -2,8 +2,8 @@
 import {React, useState, useEffect} from 'react';
 import { Routes, Route } from 'react-router-dom';
 //Pages
-import Navbar from './components/global/Navbar';
-import Footer from './components/global/Footer';
+import Navbar from './components/navbar-footer/Navbar';
+import Footer from './components/navbar-footer/Footer';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
