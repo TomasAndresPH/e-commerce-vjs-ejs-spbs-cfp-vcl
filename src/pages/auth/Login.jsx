@@ -19,8 +19,14 @@ function Login() {
     try {
       const data = await apiLogin({ email, password });
       toast.success('Inicio de sesión exitoso');
+      
+      // Guarda el token en localStorage
+      localStorage.setItem('token', data.token);
+      
+      // Guarda los datos del usuario
       login(data.user);
       localStorage.setItem('userEmail', data.user.email);
+      
       setTimeout(() => navigate('/'), 1500);
     } catch (error) {
       console.error('Error en el inicio de sesión:', error);
