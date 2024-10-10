@@ -1,106 +1,222 @@
 import React, { useState } from 'react';
-import { Container, Grid, TextField, Button, Typography, Box, Link } from '@mui/material';
+import { Container, Grid, TextField, Button, Typography, Box, Link, FormHelperText } from '@mui/material';
 import logo from '../../assets/logosintext.png';
 import { useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'sonner';
 //uso del backend
 import { register } from '../../apiService';
 
 
 const Register = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
-  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    phone: '',
+    address: ''
+  });
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
+ // Validaciones en tiempo real
+ const validate = (fieldName, value) => {
+  const newErrors = { ...errors };
+  
+  switch (fieldName) {
+    case 'name':
+      if (value.length < 2) {
+        newErrors.name = 'El nombre debe tener al menos 2 caracteres';
+      } else if (value.length > 100) {
+        newErrors.name = 'El nombre no puede exceder los 100 caracteres';
+      } else {
+        delete newErrors.name;
+      }
+      break;
+    
+    case 'email':
+      const emailRegex = /^[^\s@]+@[^\s@]+\.(cl|com|org)$/;
+      if (!emailRegex.test(value)) {
+        newErrors.email = 'Ingresa un email válido (ejemplo: usuario@dominio.cl)';
+      } else {
+        delete newErrors.email;
+      }
+      break;
+    
+    case 'password':
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/;
+      if (!passwordRegex.test(value)) {
+        newErrors.password = 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un símbolo (!@#$%^&*)';
+      } else {
+        delete newErrors.password;
+      }
+      break;
+    
+    case 'confirmPassword':
+      if (value !== formData.password) {
+        newErrors.confirmPassword = 'Las contraseñas no coinciden';
+      } else {
+        delete newErrors.confirmPassword;
+      }
+      break;
+    
+    case 'phone':
+      const phoneRegex = /^\+56[9]\d{8}$/;
+      if (!phoneRegex.test(value)) {
+        newErrors.phone = 'Ingresa un número válido (ejemplo: +56912345678)';
+      } else {
+        delete newErrors.phone;
+      }
+      break;
+    
+    case 'address':
+      if (value.length < 6) {
+        newErrors.address = 'La dirección debe tener al menos 6 caracteres';
+      } else if (value.length > 255) {
+        newErrors.address = 'La dirección no puede exceder los 255 caracteres';
+      } else {
+        delete newErrors.address;
+      }
+      break;
+    
+    default:
+      break;
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    validate(name, value);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    if (password !== confirmPassword) {
-      setError('Las contraseñas no coinciden');
-      toast.error('Las contaseñas no coinciden');
+    
+    // Validar todos los campos antes de enviar
+    let isValid = true;
+    Object.keys(formData).forEach(key => {
+      if (!validate(key, formData[key])) {
+        isValid = false;
+      }
+    });
+
+    if (!isValid) {
+      toast.error('Por favor, corrige los errores en el formulario');
       return;
     }
+
     try {
-      const data = await register({ name, email, password, phone, address });
-      console.log('Registro exitoso:', data);
+      const { confirmPassword, ...dataToSend } = formData;
+      const data = await register(dataToSend);
       toast.success('Registro exitoso');
       setTimeout(() => navigate('/login'), 1500);
     } catch (error) {
-      toast.error('Error en el proceso de registro. Por favor, intenta de nuevo.');
+      if (error.details) {
+        // Manejar errores de validación del backend
+        error.details.forEach(err => {
+          setErrors(prev => ({
+            ...prev,
+            [err.field]: err.message
+          }));
+        });
+        toast.error('Por favor, verifica los datos ingresados');
+      } else {
+        toast.error('Error en el registro. Por favor, intenta de nuevo.');
+      }
     }
   };
   
-
   return (
-    <Container maxWidth="md" sx={{ display: 'flex', justifyContent: 'center', height: '100vh', alignItems: 'center' }}>
+    <Container maxWidth="md" sx={{ display: 'flex', justifyContent: 'center', minHeight: '100vh', alignItems: 'center', py: 4, pt: 12 }}>
       <Grid container spacing={4} sx={{ boxShadow: 10, borderRadius: 10, padding: 4 }}>
         <Grid item xs={12} md={6}>
           <Typography variant="h4" gutterBottom>
             Regístrate 👋
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate autoComplete="off" sx={{ mt: 2 }}>
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 2 }}>
             <TextField
               fullWidth
               label="Nombre Completo"
+              name="name"
               margin="normal"
               required
               variant="outlined"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={formData.name}
+              onChange={handleChange}
+              error={!!errors.name}
+              helperText={errors.name || "Ingresa tu nombre completo"}
+              placeholder="Juan Pérez Silva"
             />
             <TextField
               fullWidth
               label="Correo Electrónico"
+              name="email"
               margin="normal"
               required
               variant="outlined"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleChange}
+              error={!!errors.email}
+              helperText={errors.email || "email@gmail.com"}
             />
             <TextField
               fullWidth
               label="Contraseña"
+              name="password"
               margin="normal"
               required
               variant="outlined"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleChange}
+              error={!!errors.password}
+              helperText={errors.password}
             />
+            <FormHelperText>
+            Debe tener al menos 8 caracteres, una mayúscula, un número y un símbolo (!@#$%^&*)
+            </FormHelperText>
             <TextField
               fullWidth
               label="Confirmar Contraseña"
+              name="confirmPassword"
               margin="normal"
               required
               variant="outlined"
               type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              error={!!errors.confirmPassword}
+              helperText={errors.confirmPassword}
             />
             <TextField
               fullWidth
               label="Teléfono"
+              name="phone"
               margin="normal"
+              required
               variant="outlined"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              value={formData.phone}
+              onChange={handleChange}
+              error={!!errors.phone}
+              helperText={errors.phone || "Ej. válido: +56912345678"}
+              placeholder="+56912345678"
             />
             <TextField
               fullWidth
               label="Dirección"
+              name="address"
               margin="normal"
+              required
               variant="outlined"
-              multiline
-              rows={2}
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
+              value={formData.address}
+              onChange={handleChange}
+              error={!!errors.address}
+              helperText={errors.address || "Ingresa tu dirección completa"}
             />
             <Button
               fullWidth
@@ -124,7 +240,7 @@ const Register = () => {
         <Grid item xs={12} md={6}>
           <Box
             sx={{
-              backgroundImage:  `url(${logo})`, //antes era 'url(https://source.unsplash.com/random)'
+              backgroundImage: `url(${logo})`,
               backgroundSize: 'contain',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
@@ -135,17 +251,6 @@ const Register = () => {
           />
         </Grid>
       </Grid>
-      <ToastContainer
-        position="bottom-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
     </Container>
   );
 };

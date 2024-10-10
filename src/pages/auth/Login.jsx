@@ -2,35 +2,64 @@ import React, { useState, useContext } from 'react';
 import { Container, Grid, TextField, Button, Typography, Box } from '@mui/material';
 import logo from '../../assets/logosintext.png';
 import { useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'sonner';
 import { useUser } from '../../context/userContext.jsx';
 //llamando al backend para el login
 import { login as apiLogin } from '../../apiService';
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const { login } = useUser();
+
+  const validate = (fieldName, value) => {
+    const newErrors = { ...errors };
+    
+    if (fieldName === 'email') {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.(cl|com|org)$/;
+      if (!emailRegex.test(value)) {
+        newErrors.email = 'Ingresa un email válido (ejemplo: email@gmail.cl)';
+      } else {
+        delete newErrors.email;
+      }
+    }
+    
+    setErrors(newErrors);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    validate(name, value);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const data = await apiLogin({ email, password });
+      const data = await apiLogin(formData);
       toast.success('Inicio de sesión exitoso');
       
-      // Guarda el token en localStorage
       localStorage.setItem('token', data.token);
-      
-      // Guarda los datos del usuario
       login(data.user);
       localStorage.setItem('userEmail', data.user.email);
       
       setTimeout(() => navigate('/'), 1500);
     } catch (error) {
-      console.error('Error en el inicio de sesión:', error);
-      toast.error('Error en el inicio de sesión. Por favor, intenta de nuevo.');
+      if (error.details) {
+        error.details.forEach(err => {
+          setErrors(prev => ({
+            ...prev,
+            [err.field]: err.message
+          }));
+        });
+        toast.error('Por favor, verifica tus credenciales');
+      } else {
+        toast.error('Error en el inicio de sesión. Por favor, intenta de nuevo.');
+      }
     }
   };
 
@@ -43,23 +72,31 @@ function Login() {
             <TextField 
               fullWidth 
               label="Correo electrónico" 
+              name="email"
               variant="outlined" 
               margin="normal" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleChange}
+              error={!!errors.email}
+              helperText={errors.email || "Ejemplo: email@gmail.cl"}
               required
             />
             <TextField 
               fullWidth 
               label="Contraseña" 
+              name="password"
               type="password" 
               variant="outlined" 
               margin="normal" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleChange}
+              error={!!errors.password}
+              helperText={errors.password}
               required
             />
-            <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 2, mb: 1 }}>Iniciar Sesión</Button>
+            <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 2, mb: 1 }}>
+              Iniciar Sesión
+            </Button>
             
             <Typography variant="body2" align="center">
               ¿Aún no tienes cuenta? <a href="/register">Regístrate aquí</a>
@@ -81,17 +118,6 @@ function Login() {
           />
         </Grid>
       </Grid>
-      <ToastContainer
-        position="bottom-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
     </Container>
   );
 }

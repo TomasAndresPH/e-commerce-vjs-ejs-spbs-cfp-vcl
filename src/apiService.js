@@ -1,16 +1,44 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 // Función utilitaria para obtener el token JWT almacenado
 const getToken = () => localStorage.getItem('token');
+const CACHE_KEY = 'cached_products';
+const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
 
 //Productos
 //Obtener todos los productos, esto se usa en la pagina de productos
 export const getAllProducts = async () => {
   try {
+    // Intentar obtener productos del localStorage
+    const cachedData = localStorage.getItem(CACHE_KEY);
+    if (cachedData) {
+      const parsedData = JSON.parse(cachedData);
+      // Verificar que los datos en caché son un array
+      if (Array.isArray(parsedData)) {
+        console.log('Returning cached products');
+        return parsedData;
+      } else {
+        console.warn('Cached data is not an array, removing invalid cache');
+        localStorage.removeItem(CACHE_KEY);
+      }
+    }
+
+    // Si no hay caché o es inválido, hacer la petición al backend
     const response = await fetch(`${API_BASE_URL}/products`);
     if (!response.ok) {
       throw new Error('Error al obtener los productos');
     }
-    return await response.json();
+    
+    const products = await response.json();
+    
+    // Verificar que la respuesta del backend es un array
+    if (!Array.isArray(products)) {
+      throw new Error('La respuesta del servidor no es un array válido');
+    }
+    
+    // Guardar los productos en localStorage
+    localStorage.setItem(CACHE_KEY, JSON.stringify(products));
+    
+    return products;
   } catch (error) {
     console.error('Error en getAllProducts:', error);
     throw error;

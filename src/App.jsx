@@ -18,8 +18,7 @@ import { OrderProvider } from './context/orderContext.jsx';
 //apartado de diseño
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Box } from '@mui/material';  // Añadimos el componente Box de Material UI
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Toaster} from 'sonner';
 
 //seleccion de colores para la pagina
 const theme = createTheme({
@@ -57,7 +56,11 @@ function App() {
                 </Box>
                 <Footer />
               </Box>
-              <ToastContainer />
+              <Toaster 
+                position="top-right"
+                expand={false}  // No mostrar múltiples toasts a la vez
+                richColors 
+              />
             </OrderProvider> 
           </CartProvider>
         </UserProvider>

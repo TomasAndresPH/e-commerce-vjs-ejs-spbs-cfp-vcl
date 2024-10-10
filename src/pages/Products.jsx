@@ -24,16 +24,22 @@ const Products = () => {
     const fetchProducts = async () => {
       try {
         const data = await getAllProducts();
-        setProducts(data);
-        setLoading(false);
+        // Verificación adicional por si acaso
+        setProducts(Array.isArray(data) ? data : []);
       } catch (error) {
+        console.error('Error fetching products:', error);
         setError(error.message);
+        setProducts([]); // Establecer como array vacío en caso de error
+      } finally {
         setLoading(false);
       }
     };
 
     fetchProducts();
   }, []);
+
+  if (loading) return <div>Cargando...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   const handleOpenDialog = (product) => {
     setSelectedProduct(product);
@@ -153,7 +159,8 @@ const Products = () => {
           </Box>
 
           <Grid container spacing={4} sx={{ padding: 4 }}>
-            {products.map((product) => (
+          {products.length > 0 ? (
+            products.map((product) => (
               <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
                 <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                   <CardMedia
@@ -181,7 +188,12 @@ const Products = () => {
                   </CardContent>
                 </Card>
               </Grid>
-            ))}
+            ))
+          ) : (
+            <Typography variant="h6" sx={{ textAlign: 'center', width: '100%' }}>
+              No hay productos disponibles
+            </Typography>
+          )}
           </Grid>
         </>
       )}
