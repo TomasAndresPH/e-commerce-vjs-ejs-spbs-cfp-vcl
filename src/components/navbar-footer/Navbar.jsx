@@ -1,9 +1,8 @@
 //navbar
 import React, { useContext, useState } from 'react';
-import { AppBar, Toolbar, TextField, Button, Badge, Box, Typography, IconButton, Avatar, Menu, MenuItem, Popover, List, ListItem, ListItemText } from '@mui/material';
+import { AppBar, Toolbar, TextField, Button, Badge, Box, Typography, IconButton, Avatar, Menu, MenuItem, ListItem } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import LogoutIcon from '@mui/icons-material/Logout';
+import { PersonOutline as PersonOutlineIcon, List as ListIcon, Logout as LogoutIcon, Login as LoginIcon, HowToReg as HowToRegIcon, ShoppingCart as ShoppingCartIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/userContext.jsx';
 import { useCart } from '../../context/cartContext.jsx';
@@ -138,18 +137,49 @@ const Navbar = () => {
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
+              PaperProps={{
+                elevation: 0,
+                sx: {
+                  mt: 1.5,
+                  '& .MuiMenuItem-root': {
+                    transition: 'background-color 0.3s',
+                    '&:hover': {
+                      backgroundColor: 'primary.main', // Verde oscuro
+                      color: 'secondary.main', // Blanco para el texto
+                    },
+                  },
+                },
+              }}
             >
               {user ? (
-                [
-                  <MenuItem key="profile" onClick={() => handleMenuItemClick('/profile')}>Perfil</MenuItem>,
-                  <MenuItem key="orders" onClick={() => handleMenuItemClick('/orders')}>Pedidos</MenuItem>,
-                  <MenuItem key="logout" onClick={handleLogout} >Logout</MenuItem>
-                ]
+                <>
+                  <MenuItem key="profile" onClick={() => handleMenuItemClick('/profile')}>
+                    <PersonOutlineIcon fontSize="small" sx={{ mr: 1 }} /> {/* Margen a la derecha del icono */}
+                    Perfil
+                  </MenuItem>
+
+                  <MenuItem key="orders" onClick={() => handleMenuItemClick('/orders')}>
+                    <ListIcon fontSize="small" sx={{ mr: 1 }} />
+                    Pedidos
+                  </MenuItem>
+
+                  <MenuItem key="logout" onClick={handleLogout}>
+                    <LogoutIcon fontSize="small" sx={{ mr: 1 }} />
+                    Logout
+                  </MenuItem>
+                </>
               ) : (
-                [
-                  <MenuItem key="login" onClick={() => handleMenuItemClick('/login')}>Iniciar sesión</MenuItem>,
-                  <MenuItem key="register" onClick={() => handleMenuItemClick('/register')}>Registrarse</MenuItem>
-                ]
+                <>
+                  <MenuItem key="login" onClick={() => handleMenuItemClick('/login')}>
+                    <LoginIcon fontSize="small" sx={{ mr: 1 }} />
+                    Iniciar sesión
+                  </MenuItem>
+
+                  <MenuItem key="register" onClick={() => handleMenuItemClick('/register')}>
+                    <HowToRegIcon fontSize="small" sx={{ mr: 1 }} />
+                    Registrarse
+                  </MenuItem>
+                </>
               )}
             </Menu>
           </Box>

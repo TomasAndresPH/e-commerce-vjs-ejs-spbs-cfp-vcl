@@ -123,7 +123,7 @@ const Products = () => {
         </>
       ) : (
         <>
-          <Box sx={{ width: '20%', p: 2, marginRight: 4, boxShadow: 10, borderRadius: '20px' }}>
+          <Box sx={{ width: '20%', p: 2, marginRight: 4, boxShadow: 6, borderRadius: '20px' }}>
             <Typography variant="h5" sx={{fontWeight: 'bold'}}>Categorías</Typography>
             <FormControlLabel
               control={<Checkbox checked={selectedCategories.Plasticos} onChange={handleCategoryChange} name="Plasticos" />}
@@ -162,7 +162,7 @@ const Products = () => {
           {products.length > 0 ? (
             products.map((product) => (
               <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
-                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', boxShadow: 4, borderRadius: 3}}>
                   <CardMedia
                     component="img"
                     height="200"
