@@ -45,7 +45,7 @@ function CarouselSection() {
               alignItems: 'center',
               justifyContent: 'center',
               color: 'white',
-              borderRadius: '20px',
+              borderRadius: 8,
               overflow: 'hidden',
             }}
           >
