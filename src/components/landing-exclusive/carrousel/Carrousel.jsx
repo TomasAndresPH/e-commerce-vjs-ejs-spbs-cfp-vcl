@@ -1,5 +1,5 @@
 import Carousel from 'react-material-ui-carousel';
-import { Typography, Box } from '@mui/material';
+import { Box } from '@mui/material';
 
 //visuals
 import logoEco from '../../../assets/logoeco.png';
@@ -7,6 +7,7 @@ import slider1 from '../../../assets/carousel/slider1.png';
 import slider2 from '../../../assets/carousel/slider2.png';
 import slider3 from '../../../assets/carousel/slider3.png';
 import slider4 from '../../../assets/carousel/slider4.png';
+
 // Sección del Carrusel
 function CarouselSection() {
   const items = [
@@ -34,9 +35,10 @@ function CarouselSection() {
           <Box
             key={index}
             sx={{
-              height: '60vh',
+              height: { xs: '40vh', sm: '50vh', md: '60vh' }, // Ajuste de altura según el tamaño de la pantalla
               backgroundImage: `url(${item.image})`,
-              backgroundSize: 'cover',
+              backgroundSize: 'contain', // Asegura que la imagen se ajuste sin ser cortada
+              backgroundRepeat: 'no-repeat',
               backgroundPosition: 'center',
               position: 'relative',
               display: 'flex',
