@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { getCart, addToCart as apiAddToCart, updateCartItem, removeFromCart as apiRemoveFromCart } from '../apiService';
 import { useUser } from './userContext';
+import { toast } from 'sonner';
 
 const CartContext = createContext();
 
@@ -32,6 +33,11 @@ export const CartProvider = ({ children }) => {
   };
 
   const addToCart = async (product) => {
+    if (!isAuthenticated) {
+      toast.error('Por favor, inicie sesión para agregar productos al carrito.');
+      return;
+    }
+    
     try {
       await apiAddToCart(product.id, 1);
       await loadCart(); // Recargar el carrito después de añadir
