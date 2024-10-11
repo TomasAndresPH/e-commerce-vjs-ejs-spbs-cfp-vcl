@@ -57,9 +57,10 @@ function App() {
                 <Footer />
               </Box>
               <Toaster 
-                position="top-right"
+                position="top-center"
                 expand={false}  // No mostrar múltiples toasts a la vez
                 richColors 
+                closeButton='true'
               />
             </OrderProvider> 
           </CartProvider>
