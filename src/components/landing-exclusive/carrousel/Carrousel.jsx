@@ -47,21 +47,6 @@ function CarouselSection() {
               overflow: 'hidden',
             }}
           >
-            {item.title && (
-              <Typography 
-                variant="h2" 
-                component="div" 
-                sx={{ 
-                  textAlign: 'center',
-                  p: 2, 
-                  fontWeight: 'bold',
-                  background: 'rgba(0, 0, 0, 0.8)', // Fondo semitransparente para el texto
-                  borderRadius: '10px', // Borde redondeado para el fondo del texto
-                }}
-              >
-                {item.title}
-              </Typography>
-            )}
           </Box>
         ))}
       </Carousel>
