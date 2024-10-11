@@ -1,16 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
-import {
-  Card,
-  CardContent,
-  CardActions,
-  TextField,
-  Button,
-  Typography,
-  Box,
-  Avatar,
-  IconButton
-} from '@mui/material';
+import { Card, CardContent, CardActions, TextField, Button, Typography, Box, Avatar, IconButton } from '@mui/material';
 import { Edit as EditIcon } from '@mui/icons-material';
+import { icon } from '../assets/icon.png'; 
 
 import { useUser } from '../context/userContext.jsx'; // Asegúrate de que la ruta sea correcta
 
@@ -42,7 +33,7 @@ const Profile = () => {
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
           <Box sx={{ position: 'relative' }}>
             <Avatar
-              src={user.image || "/api/placeholder/96/96"}
+              src={user.image || icon}
               sx={{ width: 100, height: 100 }}
             />
             <IconButton
