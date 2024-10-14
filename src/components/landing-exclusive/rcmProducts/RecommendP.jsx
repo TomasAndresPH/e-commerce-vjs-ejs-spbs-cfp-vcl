@@ -1,14 +1,15 @@
 import React from 'react';
 import { Container, Typography, Grid, Box, Button } from '@mui/material';
+import defaultProduct from '../../../assets/products/default.webp';
 
 function RecommendedProducts() {
   // Aquí puedes agregar la lógica para obtener los productos recomendados
   // Por ahora, usaremos datos de ejemplo
   const recommendedProducts = [
-    { name: 'Producto Recomendado 1', image: 'https://via.placeholder.com/150' },
-    { name: 'Producto Recomendado 2', image: 'https://via.placeholder.com/150' },
-    { name: 'Producto Recomendado 3', image: 'https://via.placeholder.com/150' },
-    { name: 'Producto Recomendado 4', image: 'https://via.placeholder.com/150' },
+    { name: 'Producto Recomendado 1', image: defaultProduct },
+    { name: 'Producto Recomendado 2', image: defaultProduct },
+    { name: 'Producto Recomendado 3', image: defaultProduct },
+    { name: 'Producto Recomendado 4', image: defaultProduct },
   ];
 
   return (

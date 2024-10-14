@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Container, Grid, TextField, Button, Typography, Box, Link, FormHelperText } from '@mui/material';
-import logo from '../../assets/logosintext.png';
 import { useNavigate } from 'react-router-dom';
+import { Container, Grid, TextField, Button, Typography, Box, Link, FormHelperText } from '@mui/material';
 import { toast } from 'sonner';
-//uso del backend
-import { register } from '../../apiService';
 
+import { register } from '../../apiService';
+import logo from '../../assets/icons&logos/logosintext.webp';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -17,70 +16,70 @@ const Register = () => {
     address: ''
   });
   const [errors, setErrors] = useState({});
+  const [isRegistered, setIsRegistered] = useState(false);
   const navigate = useNavigate();
 
- // Validaciones en tiempo real
- const validate = (fieldName, value) => {
-  const newErrors = { ...errors };
-  
-  switch (fieldName) {
-    case 'name':
-      if (value.length < 2) {
-        newErrors.name = 'El nombre debe tener al menos 2 caracteres';
-      } else if (value.length > 100) {
-        newErrors.name = 'El nombre no puede exceder los 100 caracteres';
-      } else {
-        delete newErrors.name;
-      }
-      break;
+  const validate = (fieldName, value) => {
+    const newErrors = { ...errors };
     
-    case 'email':
-      const emailRegex = /^[^\s@]+@[^\s@]+\.(cl|com|org)$/;
-      if (!emailRegex.test(value)) {
-        newErrors.email = 'Ingresa un email válido (ejemplo: usuario@dominio.cl)';
-      } else {
-        delete newErrors.email;
-      }
-      break;
-    
-    case 'password':
-      const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/;
-      if (!passwordRegex.test(value)) {
-        newErrors.password = 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un símbolo (!@#$%^&*)';
-      } else {
-        delete newErrors.password;
-      }
-      break;
-    
-    case 'confirmPassword':
-      if (value !== formData.password) {
-        newErrors.confirmPassword = 'Las contraseñas no coinciden';
-      } else {
-        delete newErrors.confirmPassword;
-      }
-      break;
-    
-    case 'phone':
-      const phoneRegex = /^\+56[9]\d{8}$/;
-      if (!phoneRegex.test(value)) {
-        newErrors.phone = 'Ingresa un número válido (ejemplo: +56912345678)';
-      } else {
-        delete newErrors.phone;
-      }
-      break;
-    
-    case 'address':
-      if (value.length < 6) {
-        newErrors.address = 'La dirección debe tener al menos 6 caracteres';
-      } else if (value.length > 255) {
-        newErrors.address = 'La dirección no puede exceder los 255 caracteres';
-      } else {
-        delete newErrors.address;
-      }
-      break;
-    
-    default:
-      break;
+    switch (fieldName) {
+      case 'name':
+        if (value.length < 2) {
+          newErrors.name = 'El nombre debe tener al menos 2 caracteres';
+        } else if (value.length > 100) {
+          newErrors.name = 'El nombre no puede exceder los 100 caracteres';
+        } else {
+          delete newErrors.name;
+        }
+        break;
+      
+      case 'email':
+        const emailRegex = /^[^\s@]+@[^\s@]+\.(cl|com|org)$/;
+        if (!emailRegex.test(value)) {
+          newErrors.email = 'Ingresa un email válido (ejemplo: usuario@dominio.cl)';
+        } else {
+          delete newErrors.email;
+        }
+        break;
+      
+      case 'password':
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/;
+        if (!passwordRegex.test(value)) {
+          newErrors.password = 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un símbolo (!@#$%^&*)';
+        } else {
+          delete newErrors.password;
+        }
+        break;
+      
+      case 'confirmPassword':
+        if (value !== formData.password) {
+          newErrors.confirmPassword = 'Las contraseñas no coinciden';
+        } else {
+          delete newErrors.confirmPassword;
+        }
+        break;
+      
+      case 'phone':
+        const phoneRegex = /^\+56[9]\d{8}$/;
+        if (!phoneRegex.test(value)) {
+          newErrors.phone = 'Ingresa un número válido (ejemplo: +56912345678)';
+        } else {
+          delete newErrors.phone;
+        }
+        break;
+      
+      case 'address':
+        if (value.length < 6) {
+          newErrors.address = 'La dirección debe tener al menos 6 caracteres';
+        } else if (value.length > 255) {
+          newErrors.address = 'La dirección no puede exceder los 255 caracteres';
+        } else {
+          delete newErrors.address;
+        }
+        break;
+      
+      default:
+        break;
     }
     
     setErrors(newErrors);
@@ -96,27 +95,28 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validar todos los campos antes de enviar
     let isValid = true;
     Object.keys(formData).forEach(key => {
       if (!validate(key, formData[key])) {
         isValid = false;
       }
     });
-
+  
     if (!isValid) {
       toast.error('Por favor, corrige los errores en el formulario');
       return;
     }
-
+  
     try {
       const { confirmPassword, ...dataToSend } = formData;
-      const data = await register(dataToSend);
-      toast.success('Registro exitoso');
-      setTimeout(() => navigate('/login'), 1500);
+      await register(dataToSend);
+      if (!isRegistered) {
+        toast.success('Registro exitoso. Por favor, inicia sesión.');
+        setIsRegistered(true);  // Evitar duplicados
+      }
+      navigate('/login', { state: { email: formData.email } });
     } catch (error) {
       if (error.details) {
-        // Manejar errores de validación del backend
         error.details.forEach(err => {
           setErrors(prev => ({
             ...prev,
@@ -178,7 +178,7 @@ const Register = () => {
               helperText={errors.password}
             />
             <FormHelperText>
-            Debe tener al menos 8 caracteres, una mayúscula, un número y un símbolo (!@#$%^&*)
+              Debe tener al menos 8 caracteres, una mayúscula, un número y un símbolo (!@#$%^&*)
             </FormHelperText>
             <TextField
               fullWidth

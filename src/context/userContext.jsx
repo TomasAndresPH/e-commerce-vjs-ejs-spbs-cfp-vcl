@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 
 const UserContext = createContext();
-const SESSION_TIMEOUT = 300000; // 30 minutos
+const SESSION_TIMEOUT = 1800000; // 30 minutos
 const GRACE_PERIOD = 20000; // 20 segundos para responder
 
 export const useUser = () => useContext(UserContext);
@@ -20,15 +20,16 @@ export const UserProvider = ({ children }) => {
     console.log('Ejecutando logout...');
     setUser(null);
     setIsAuthenticated(false);
+    setIsRegistered(false);  // Restablecer el estado de isRegistered
     localStorage.removeItem('user');
     localStorage.removeItem('token');
-
+    
     if (location.pathname === '/') {
       setTimeout(() => {
         setShowLogoutToast(true);
       }, 1000);
     } else {
-      navigate('/'); // Si no estamos en '/', redireccionar
+      navigate('/');
       setTimeout(() => {
         setShowLogoutToast(true);
       }, 1000);
@@ -47,10 +48,12 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     const token = localStorage.getItem('token');
-    
+  
     if (storedUser && token) {
       setUser(JSON.parse(storedUser));
       setIsAuthenticated(true);
+    } else {
+      setIsRegistered(false);  // Restablecer si no hay token
     }
   }, []);
 

@@ -2,31 +2,15 @@ import Carousel from 'react-material-ui-carousel';
 import { Box } from '@mui/material';
 
 //visuals
-import logoEco from '../../../assets/logoeco.png';
-import slider1 from '../../../assets/carousel/slider1.png';
-import slider2 from '../../../assets/carousel/slider2.png';
-import slider3 from '../../../assets/carousel/slider3.png';
-import slider4 from '../../../assets/carousel/slider4.png';
+import slider0 from '../../../assets/carousel/slider0.webp';
+import slider1 from '../../../assets/carousel/slider1.webp';
+import slider2 from '../../../assets/carousel/slider2.webp';
+import slider3 from '../../../assets/carousel/slider3.webp';
+import slider4 from '../../../assets/carousel/slider4.webp';
 
 // Sección del Carrusel
 function CarouselSection() {
-  const items = [
-    {
-      image: logoEco,
-    },
-    {
-      image: slider1,
-    },
-    {
-      image: slider2,
-    },
-    {
-      image: slider3,
-    },
-    {
-      image: slider4,
-    },
-  ];
+  const items = [{image: slider0},{image: slider1},{image: slider2},{image: slider3},{image: slider4}];
 
   return (
     <Box sx={{ mt: 10, mb: 8 }}>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Grid, Card, CardContent, CardMedia, Typography, Button, Checkbox, FormControlLabel, Box, Slider, Dialog, DialogTitle, DialogContent, DialogActions,Skeleton } from '@mui/material';
-import img_product from '../assets/products/default.png'
+import img_product from '../assets/products/default.webp'
 import { getAllProducts } from '../apiService';
 import { useCart } from '../context/cartContext.jsx';
 

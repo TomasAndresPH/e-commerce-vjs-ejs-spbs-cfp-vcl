@@ -1,11 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Container, Grid, TextField, Button, Typography, Box } from '@mui/material';
-import logo from '../../assets/logosintext.png';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
 import { useUser } from '../../context/userContext.jsx';
-//llamando al backend para el login
-import { login as apiLogin } from '../../apiService';
+import { useCart } from '../../context/cartContext.jsx';
+import { login as apiLogin, addToCart } from '../../apiService';
+import logo from '../../assets/icons&logos/logosintext.webp';
+import { toast } from 'sonner';
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -14,7 +14,16 @@ function Login() {
   });
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useUser();
+  const { clearCart, loadCart } = useCart();
+
+  useEffect(() => {
+    if (location.state && location.state.email) {
+      setFormData(prev => ({ ...prev, email: location.state.email }));
+      toast.info('Por favor, inicia sesión con tu nueva cuenta.');
+    }
+  }, [location.state]);
 
   const validate = (fieldName, value) => {
     const newErrors = { ...errors };
@@ -47,7 +56,35 @@ function Login() {
       login(data.user);
       localStorage.setItem('userEmail', data.user.email);
       
-      setTimeout(() => navigate('/'), 1500);
+      // Transferir productos del localStorage al carrito del usuario
+      // Transferir productos del localStorage al carrito del usuario
+      const localCart = JSON.parse(localStorage.getItem('cart') || '[]');
+      let transferErrors = [];
+
+      for (const item of localCart) {
+        try {
+          await addToCart(item.id, item.quantity);
+          //toast.info(`Producto ${item.id} agregado al carrito`);
+        } catch (error) {
+          console.error(`Error al agregar el producto ${item.id} al carrito:`, error);
+          transferErrors.push(item.id);
+          //toast.error(`Error al agregar el producto ${item.id} al carrito`);
+        }
+      }
+
+      if (transferErrors.length > 0) {
+        toast.warning(`No se pudieron transferir algunos productos (IDs: ${transferErrors.join(', ')}) al carrito. Por favor, inténtalo de nuevo más tarde.`);
+      } else if (localCart.length > 0) {
+        toast.success('Carrito actualizado a tu cuenta 😊');
+      }
+      
+      localStorage.removeItem('cart');
+      clearCart(); // Limpiar el contexto del carrito local
+      
+      // Redireccionar al home
+      navigate('/');
+
+      setTimeout(() => loadCart(), 1500);
     } catch (error) {
       if (error.details) {
         error.details.forEach(err => {
@@ -62,6 +99,8 @@ function Login() {
       }
     }
   };
+
+
 
   return (
     <Container maxWidth="md" sx={{ display: 'flex', justifyContent: 'center', height: '100vh', alignItems: 'center' }}>

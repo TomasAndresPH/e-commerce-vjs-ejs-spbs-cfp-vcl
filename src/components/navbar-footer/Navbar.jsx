@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/userContext.jsx';
 import { useCart } from '../../context/cartContext.jsx';
 import CartPopover from '../carrito/CartPopover.jsx';
-import avatar from '../../assets/logoeco.png';
+import avatar from '../../assets/icons&logos/avatardefault.webp';
 
 const Navbar = () => {
 

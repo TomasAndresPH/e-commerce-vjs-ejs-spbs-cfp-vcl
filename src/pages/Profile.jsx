@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Card, CardContent, CardActions, TextField, Button, Typography, Box, Avatar, IconButton } from '@mui/material';
 import { Edit as EditIcon } from '@mui/icons-material';
-import { icon } from '../assets/icon.png'; 
+import icon from '../assets/icons&logos/avatardefault.webp'; 
 
 import { useUser } from '../context/userContext.jsx'; // Asegúrate de que la ruta sea correcta
 
@@ -34,7 +34,7 @@ const Profile = () => {
           <Box sx={{ position: 'relative' }}>
             <Avatar
               src={user.image || icon}
-              sx={{ width: 100, height: 100 }}
+              sx={{ width: 100, height: 100, boxShadow: 3 }}
             />
             <IconButton
               size="small"
@@ -42,6 +42,7 @@ const Profile = () => {
                 position: 'absolute',
                 bottom: 0,
                 right: 0,
+                boxShadow: 10,
                 backgroundColor: 'background.paper',
                 '&:hover': { backgroundColor: 'background.default' },
               }}
