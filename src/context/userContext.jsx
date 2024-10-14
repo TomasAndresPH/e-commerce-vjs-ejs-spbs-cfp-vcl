@@ -13,6 +13,7 @@ export const UserProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showExtendSession, setShowExtendSession] = useState(false);
   const [showLogoutToast, setShowLogoutToast] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
   const navigate = useNavigate();
   const location = useLocation(); 
 

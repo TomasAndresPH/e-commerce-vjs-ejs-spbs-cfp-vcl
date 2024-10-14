@@ -4,6 +4,7 @@ import { Container, Grid, TextField, Button, Typography, Box, Link, FormHelperTe
 import { toast } from 'sonner';
 
 import { register } from '../../apiService';
+import { useUser } from '../../context/userContext.jsx';
 import logo from '../../assets/icons&logos/logosintext.webp';
 
 const Register = () => {
@@ -16,7 +17,7 @@ const Register = () => {
     address: ''
   });
   const [errors, setErrors] = useState({});
-  const [isRegistered, setIsRegistered] = useState(false);
+  const { isRegistered, setIsRegistered } = useUser();
   const navigate = useNavigate();
 
   const validate = (fieldName, value) => {
