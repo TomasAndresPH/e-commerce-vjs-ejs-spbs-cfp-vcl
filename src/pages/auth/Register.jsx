@@ -126,8 +126,8 @@ const Register = () => {
         });
         toast.error('Por favor, verifica los datos ingresados');
       } else {
-        toast.error('Error en el registro. Por favor, intenta de nuevo.');
-      }
+         toast.error('Error en el registro. Por favor, intenta de nuevo.');
+       }
     }
   };
   
@@ -165,6 +165,7 @@ const Register = () => {
               error={!!errors.email}
               helperText={errors.email || "email@gmail.com"}
             />
+            32232ASDADSAAsa!
             <TextField
               fullWidth
               label="Contraseña"

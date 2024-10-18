@@ -75,7 +75,7 @@ function Login() {
       if (transferErrors.length > 0) {
         toast.warning(`No se pudieron transferir algunos productos (IDs: ${transferErrors.join(', ')}) al carrito. Por favor, inténtalo de nuevo más tarde.`);
       } else if (localCart.length > 0) {
-        toast.success('Carrito actualizado a tu cuenta 😊');
+        toast.success('Carrito actualizado');
       }
       
       localStorage.removeItem('cart');

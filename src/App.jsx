@@ -1,6 +1,6 @@
 //todo lo que es front
 import {React} from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 //Pages
 import Navbar from './components/navbar-footer/Navbar';
 import Footer from './components/navbar-footer/Footer';
@@ -11,6 +11,7 @@ import Products from './pages/Products';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
 import Profile from './pages/Profile';
+import Test from './pages/testing-simpleideas/Landing.jsx';
 //Customers backend
 import { UserProvider } from './context/userContext.jsx';
 import { CartProvider } from './context/cartContext.jsx';
@@ -35,6 +36,7 @@ const theme = createTheme({
 
 
 function App() {
+  const location = useLocation();
 
   return (
     <ThemeProvider theme={theme}>
@@ -42,8 +44,11 @@ function App() {
           <CartProvider>
             <OrderProvider>
               <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-                <Navbar />
-                <Box sx={{ flexGrow: 1, p: 3 }}>
+
+                {location.pathname !== '/test' && <Navbar />}
+                
+                <Box sx={{ flexGrow: 1 }}> 
+                  {/* , p: 3 */}
                   <Routes>
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/login" element={<Login />} />
@@ -52,9 +57,12 @@ function App() {
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/orders" element={<Orders />} />
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="/test" element={<Test />} />
                   </Routes>
                 </Box>
-                <Footer />
+
+                {location.pathname !== '/test' && <Footer />}
+                
               </Box>
               <Toaster 
                 position="top-center"

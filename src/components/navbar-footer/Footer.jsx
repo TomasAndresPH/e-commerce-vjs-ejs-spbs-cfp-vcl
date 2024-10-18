@@ -18,7 +18,7 @@ function Footer() {
           theme.palette.mode === 'light' ? theme.palette.grey[300] : theme.palette.grey[800],
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" >
         <Grid container spacing={4} justifyContent="center">
           {/* Enlaces a Páginas */}
           <Grid item xs={12} sm={4}>
