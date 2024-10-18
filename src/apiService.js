@@ -1,47 +1,55 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const WORKER_API_PRODUCTS = import.meta.env.VITE_WORKER_API_PRODUCTS;
+
 // Función utilitaria para obtener el token JWT almacenado
 const getToken = () => localStorage.getItem('token');
 const CACHE_KEY = 'cached_products';
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
 
+const handleApiError = (error, context) => {
+  console.error(`Error en ${context}:`, error);
+  throw new Error(`Error en ${context}: ${error.message}`);
+};
+
+const fetchWithErrorHandling = async (url, options = {}) => {
+  try {
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    handleApiError(error, 'fetchWithErrorHandling');
+  }
+};
+
 //Productos
 //Obtener todos los productos, esto se usa en la pagina de productos
 export const getAllProducts = async () => {
   try {
-    // Intentar obtener productos del localStorage
     const cachedData = localStorage.getItem(CACHE_KEY);
     if (cachedData) {
-      const parsedData = JSON.parse(cachedData);
-      // Verificar que los datos en caché son un array
-      if (Array.isArray(parsedData)) {
+      const { timestamp, data } = JSON.parse(cachedData);
+      if (Date.now() - timestamp < CACHE_DURATION && Array.isArray(data)) {
         console.log('Returning cached products');
-        return parsedData;
-      } else {
-        console.warn('Cached data is not an array, removing invalid cache');
-        localStorage.removeItem(CACHE_KEY);
+        return data;
       }
     }
 
-    // Si no hay caché o es inválido, hacer la petición al backend
-    const response = await fetch(`${API_BASE_URL}/products`);
-    if (!response.ok) {
-      throw new Error('Error al obtener los productos');
-    }
+    const products = await fetchWithErrorHandling(`${WORKER_API_PRODUCTS}/products`);
     
-    const products = await response.json();
-    
-    // Verificar que la respuesta del backend es un array
     if (!Array.isArray(products)) {
       throw new Error('La respuesta del servidor no es un array válido');
     }
     
-    // Guardar los productos en localStorage
-    localStorage.setItem(CACHE_KEY, JSON.stringify(products));
+    localStorage.setItem(CACHE_KEY, JSON.stringify({
+      timestamp: Date.now(),
+      data: products
+    }));
     
     return products;
   } catch (error) {
-    console.error('Error en getAllProducts:', error);
-    throw error;
+    handleApiError(error, 'getAllProducts');
   }
 };
 //Obtener un producto en especifico, esto no se esta usando actualmente, pero lo dejo por si se necesita en un futuro cuando se habra un producto en especifico,
@@ -49,14 +57,13 @@ export const getAllProducts = async () => {
 //para no llamar al backend tantas veces.
 export const getProductById = async (id) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/products/${id}`);
-    if (!response.ok) {
-      throw new Error('Error al obtener el producto');
+    const product = await fetchWithErrorHandling(`${WORKER_API_PRODUCTS}/products/${id}`);
+    if (!product) {
+      throw new Error(`Producto con ID ${id} no encontrado`);
     }
-    return await response.json();
+    return product;
   } catch (error) {
-    console.error('Error en getProductById:', error);
-    throw error;
+    handleApiError(error, `getProductById para ID ${id}`);
   }
 };
 //Registro
