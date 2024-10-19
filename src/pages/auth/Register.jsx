@@ -113,9 +113,10 @@ const Register = () => {
       await register(dataToSend);
       if (!isRegistered) {
         toast.success('Registro exitoso. Por favor, inicia sesión.');
+        navigate('/login', { state: { email: formData.email } });
+        setTimeout(() => {toast.info('Por favor, inicia sesión con tu nueva cuenta.');}, 1000);
         setIsRegistered(true);  // Evitar duplicados
       }
-      navigate('/login', { state: { email: formData.email } });
     } catch (error) {
       if (error.details) {
         error.details.forEach(err => {
@@ -125,9 +126,7 @@ const Register = () => {
           }));
         });
         toast.error('Por favor, verifica los datos ingresados');
-      } else {
-         toast.error('Error en el registro. Por favor, intenta de nuevo.');
-       }
+      }
     }
   };
   

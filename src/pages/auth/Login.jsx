@@ -21,7 +21,6 @@ function Login() {
   useEffect(() => {
     if (location.state && location.state.email) {
       setFormData(prev => ({ ...prev, email: location.state.email }));
-      toast.info('Por favor, inicia sesión con tu nueva cuenta.');
     }
   }, [location.state]);
 

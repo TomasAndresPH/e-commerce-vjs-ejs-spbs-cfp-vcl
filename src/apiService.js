@@ -1,5 +1,6 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const WORKER_API_PRODUCTS = import.meta.env.VITE_WORKER_API_PRODUCTS;
+const WORKER_API_AUTH = import.meta.env.VITE_WORKER_API_AUTH;
 
 // Función utilitaria para obtener el token JWT almacenado
 const getToken = () => localStorage.getItem('token');
@@ -69,7 +70,7 @@ export const getProductById = async (id) => {
 //Registro
 export const register = async (userData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+    const response = await fetch(`${WORKER_API_AUTH}/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -89,7 +90,7 @@ export const register = async (userData) => {
 //Login
 export const login = async (credentials) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    const response = await fetch(`${WORKER_API_AUTH}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
