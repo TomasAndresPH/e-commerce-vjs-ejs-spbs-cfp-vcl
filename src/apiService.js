@@ -1,6 +1,7 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const WORKER_API_PRODUCTS = import.meta.env.VITE_WORKER_API_PRODUCTS;
 const WORKER_API_AUTH = import.meta.env.VITE_WORKER_API_AUTH;
+const WORKER_API_CART = import.meta.env.VITE_WORKER_API_CART;
 
 // Función utilitaria para obtener el token JWT almacenado
 const getToken = () => localStorage.getItem('token');
@@ -185,7 +186,7 @@ export const getOrderById = async (orderId) => {
 export const getCart = async () => {
   const token = getToken();
   try {
-    const response = await fetch(`${API_BASE_URL}/cart`, {
+    const response = await fetch(`${WORKER_API_CART}/cart`, {
       headers: {
         'Authorization': `Bearer ${token}`,
       },
@@ -207,7 +208,7 @@ export const getCart = async () => {
 export const addToCart = async (productoId, cantidad) => {
   const token = getToken();
   try {
-    const response = await fetch(`${API_BASE_URL}/cart/add`, {
+    const response = await fetch(`${WORKER_API_CART}/cart/add`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -228,7 +229,7 @@ export const addToCart = async (productoId, cantidad) => {
 export const updateCartItem = async (productoId, cantidad) => {
   const token = getToken();
   try {
-    const response = await fetch(`${API_BASE_URL}/cart/update`, {
+    const response = await fetch(`${WORKER_API_CART}/cart/update`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -249,7 +250,7 @@ export const updateCartItem = async (productoId, cantidad) => {
 export const removeFromCart = async (productoId) => {
   const token = getToken();
   try {
-    const response = await fetch(`${API_BASE_URL}/cart/remove/${productoId}`, {
+    const response = await fetch(`${WORKER_API_CART}/cart/remove/${productoId}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,
