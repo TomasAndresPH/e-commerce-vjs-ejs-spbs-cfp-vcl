@@ -47,7 +47,7 @@ function App() {
 
                 {location.pathname !== '/test' && <Navbar />}
                 
-                <Box sx={{ flexGrow: 1 }}> 
+                <Box sx={{ flexGrow: 1, p: 3 }}> 
                   {/* , p: 3 */}
                   <Routes>
                     <Route path="/" element={<LandingPage />} />
@@ -61,7 +61,8 @@ function App() {
                   </Routes>
                 </Box>
 
-                {location.pathname !== '/test' && <Footer />}
+                {/* {location.pathname !== '/test' && */
+                <Footer />} 
                 
               </Box>
               <Toaster 

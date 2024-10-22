@@ -18,22 +18,28 @@ export const OrderProvider = ({ children }) => {
         customer_id: user.id,
         items: cartItems
       };
-      const newOrder = await apiCreateOrder(orderData);
-      setOrders(prev => [newOrder, ...prev]);
-      clearCart();
-      return newOrder;
+      const response = await apiCreateOrder(orderData);
+      // Actualizar para manejar la nueva estructura de respuesta
+      if (response.success && response.data) {
+        setOrders(prev => [response.data, ...prev]);
+        clearCart();
+        return response.data;
+      }
     } catch (error) {
       console.error('Error en createOrder:', error);
       throw error;
     }
   };
 
-  const fetchOrders = useCallback(async () => { // Usar useCallback aquí
+  const fetchOrders = useCallback(async () => {
     if (!user) return;
     
     try {
-      const data = await getOrdersByCustomer(user.id);
-      setOrders(data);
+      const response = await getOrdersByCustomer(user.id);
+      // Actualizar para manejar la nueva estructura de respuesta
+      if (response.success && response.data) {
+        setOrders(response.data);
+      }
     } catch (error) {
       console.error('Error en fetchOrders:', error);
     }

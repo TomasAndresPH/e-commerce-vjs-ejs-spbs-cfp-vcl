@@ -2,6 +2,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const WORKER_API_PRODUCTS = import.meta.env.VITE_WORKER_API_PRODUCTS;
 const WORKER_API_AUTH = import.meta.env.VITE_WORKER_API_AUTH;
 const WORKER_API_CART = import.meta.env.VITE_WORKER_API_CART;
+const WORKER_API_ORDERS = import.meta.env.VITE_WORKER_API_ORDERS;
 
 // Función utilitaria para obtener el token JWT almacenado
 const getToken = () => localStorage.getItem('token');
@@ -121,7 +122,7 @@ export const createOrder = async (orderData) => {
   const token = getToken(); // Obtener el token JWT
 
   try {
-    const response = await fetch(`${API_BASE_URL}/orders`, {
+    const response = await fetch(`${WORKER_API_ORDERS}/orders`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`, // Enviar el token en el encabezado de autorización
@@ -143,7 +144,7 @@ export const createOrder = async (orderData) => {
 export const getOrdersByCustomer = async (customerId) => {
   const token = getToken(); // Obtener el token JWT
   try {
-    const response = await fetch(`${API_BASE_URL}/orders/customer/${customerId}`, {
+    const response = await fetch(`${WORKER_API_ORDERS}/order/customer/${customerId}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`, // Enviar el token en el encabezado de autorización
@@ -164,7 +165,7 @@ export const getOrderById = async (orderId) => {
   const token = getToken(); // Obtener el token JWT
 
   try {
-    const response = await fetch(`${API_BASE_URL}/orders/${orderId}`, {
+    const response = await fetch(`${WORKER_API_ORDERS}/orders/${orderId}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`, // Enviar el token en el encabezado de autorización
