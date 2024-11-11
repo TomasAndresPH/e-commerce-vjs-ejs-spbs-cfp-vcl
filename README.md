@@ -1,4 +1,4 @@
-Aplicacion web Ecommerce, para la pagina https://ecoplastics.store/.
+Aplicacion web Ecommerce, para la pagina https://ecoplastics.store/. \n
 Realizada con las siguientes tecnologias:
 -ViteJS
 -ReactJS
@@ -8,3 +8,6 @@ Realizada con las siguientes tecnologias:
 -ExpressJS
 -JWT
 -zod
+
+pnpm i
+pnpm run ""
