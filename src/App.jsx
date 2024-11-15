@@ -8,10 +8,11 @@ import LandingPage from './pages/LandingPage';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Products from './pages/Products';
-import Checkout from './pages/Checkout';
+import Checkout from './pages/payment/Checkout.jsx';
+import Summary from './pages/payment/Summary.jsx';
+import Shipping from './pages/payment/Shipping.jsx';
 import Orders from './pages/Orders';
 import Profile from './pages/Profile';
-import Test from './pages/testing-simpleideas/Landing.jsx';
 //Customers backend
 import { UserProvider } from './context/userContext.jsx';
 import { CartProvider } from './context/cartContext.jsx';
@@ -44,9 +45,7 @@ function App() {
           <CartProvider>
             <OrderProvider>
               <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-
-                {location.pathname !== '/test' && <Navbar />}
-                
+                <Navbar />
                 <Box sx={{ flexGrow: 1, p: 3 }}> 
                   {/* , p: 3 */}
                   <Routes>
@@ -55,15 +54,13 @@ function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/products" element={<Products />} />
                     <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/summary" element={<Summary />} />
+                    <Route path="/shipping" element={<Shipping />} />
                     <Route path="/orders" element={<Orders />} />
                     <Route path="/profile" element={<Profile />} />
-                    <Route path="/test" element={<Test />} />
                   </Routes>
                 </Box>
-
-                {/* {location.pathname !== '/test' && */
-                <Footer />} 
-                
+                <Footer />
               </Box>
               <Toaster 
                 position="top-center"

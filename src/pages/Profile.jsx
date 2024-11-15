@@ -4,14 +4,28 @@ import { Edit as EditIcon } from '@mui/icons-material';
 import icon from '../assets/icons&logos/avatardefault.webp'; 
 
 import { useUser } from '../context/userContext.jsx'; // Asegúrate de que la ruta sea correcta
+import { updateProfile } from '../apiService'; // Asegúrate de que la ruta sea correcta
 
 const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user } = useUser();
+  const [success, setSuccess] = useState(false);
+  const { user, setUser } = useUser();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: ''
+  });
 
   useEffect(() => {
     if (user) {
+      setFormData({
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        address: user.address || ''
+      });
       setLoading(false);
     } else {
       setError('No se ha encontrado información del usuario');
@@ -19,12 +33,47 @@ const Profile = () => {
     }
   }, [user]);
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      // Identificar campos modificados
+      const updates = {};
+      Object.keys(formData).forEach(key => {
+        if (formData[key] !== user[key] && formData[key] !== '') {
+          updates[key] = formData[key];
+        }
+      });
+
+      if (Object.keys(updates).length === 0) {
+        setError('No hay cambios para guardar');
+        setLoading(false);
+        return;
+      }
+
+      const updatedUser = await updateProfile(updates);
+      setUser(updatedUser);
+      setSuccess(true);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading) {
     return <p>Cargando perfil...</p>;
-  }
-
-  if (error) {
-    return <p>Error: {error}</p>;
   }
 
   return (

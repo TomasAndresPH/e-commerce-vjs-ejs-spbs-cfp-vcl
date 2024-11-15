@@ -7,7 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useCart } from '../../context/cartContext';
 
 // Opción 1: Función regular
-function CartPopover({ anchorEl, onClose, onCheckout }) {
+function CartPopover({ anchorEl, onClose, onSummary }) {
   const navigate = useNavigate();
   const { cart, updateQuantity, removeFromCart, getCartTotal, isLoading } = useCart();
   const open = Boolean(anchorEl);
@@ -87,7 +87,7 @@ function CartPopover({ anchorEl, onClose, onCheckout }) {
           variant="contained" 
           color="primary" 
           fullWidth 
-          onClick={onCheckout}
+          onClick={onSummary}
           sx={{ mt: 2 }}
         >
           Proceder al Pago
@@ -163,7 +163,7 @@ function CartPopover({ anchorEl, onClose, onCheckout }) {
           variant="contained" 
           color="primary" 
           fullWidth 
-          onClick={onCheckout}
+          onClick={onSummary}
           sx={{ mt: 2 }}
         >
           Proceder al Pago

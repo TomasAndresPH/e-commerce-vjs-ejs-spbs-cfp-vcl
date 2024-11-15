@@ -53,6 +53,11 @@ const Navbar = () => {
     navigate('/checkout');
   };
 
+  const handleProceedToSummary = () => {
+    handleCartClose();
+    navigate('/summary');
+  };
+
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -124,7 +129,7 @@ const Navbar = () => {
             open={Boolean(cartAnchorEl)}
             anchorEl={cartAnchorEl}
             onClose={handleCartClose}
-            onCheckout={handleProceedToCheckout}
+            onSummary={handleProceedToSummary}
           />
           {/* Menú de usuario */}
           <Box>

@@ -25,7 +25,6 @@ const fetchWithErrorHandling = async (url, options = {}) => {
     handleApiError(error, 'fetchWithErrorHandling');
   }
 };
-
 //Productos
 //Obtener todos los productos, esto se usa en la pagina de productos
 export const getAllProducts = async () => {
@@ -113,6 +112,44 @@ export const login = async (credentials) => {
     return data;
   } catch (error) {
     console.error('Error en login:', error);
+    throw error;
+  }
+};
+// Actualizar perfil
+export const updateProfile = async (updates) => {
+  try {
+    const token = getToken();
+    if (!token) {
+      throw new Error('No hay token de autenticación');
+    }
+
+    // Solo enviamos los campos que tienen valor
+    const updatedFields = Object.fromEntries(
+      Object.entries(updates).filter(([_, value]) => value !== null && value !== undefined && value !== '')
+    );
+
+    if (Object.keys(updatedFields).length === 0) {
+      throw new Error('No hay campos para actualizar');
+    }
+
+    const response = await fetch(`${WORKER_API_AUTH}/auth/updateprofile`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedFields)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Error al actualizar el perfil');
+    }
+
+    return data.user;
+  } catch (error) {
+    console.error('Error en updateProfile:', error);
     throw error;
   }
 };

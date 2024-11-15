@@ -13,8 +13,8 @@ const Register = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    phone: '',
-    address: ''
+    // phone: '',
+    // address: ''
   });
   const [errors, setErrors] = useState({});
   const { isRegistered, setIsRegistered } = useUser();
@@ -60,27 +60,27 @@ const Register = () => {
         }
         break;
       
-      case 'phone':
-        const phoneRegex = /^\+56[9]\d{8}$/;
-        if (!phoneRegex.test(value)) {
-          newErrors.phone = 'Ingresa un número válido (ejemplo: +56912345678)';
-        } else {
-          delete newErrors.phone;
-        }
-        break;
+      // case 'phone':
+      //   const phoneRegex = /^\+56[9]\d{8}$/;
+      //   if (!phoneRegex.test(value)) {
+      //     newErrors.phone = 'Ingresa un número válido (ejemplo: +56912345678)';
+      //   } else {
+      //     delete newErrors.phone;
+      //   }
+      //   break;w
       
-      case 'address':
-        if (value.length < 6) {
-          newErrors.address = 'La dirección debe tener al menos 6 caracteres';
-        } else if (value.length > 255) {
-          newErrors.address = 'La dirección no puede exceder los 255 caracteres';
-        } else {
-          delete newErrors.address;
-        }
-        break;
+      // case 'address':
+      //   if (value.length < 6) {
+      //     newErrors.address = 'La dirección debe tener al menos 6 caracteres';
+      //   } else if (value.length > 255) {
+      //     newErrors.address = 'La dirección no puede exceder los 255 caracteres';
+      //   } else {
+      //     delete newErrors.address;
+      //   }
+      //   break;
       
-      default:
-        break;
+      // default:
+      //   break;
     }
     
     setErrors(newErrors);
@@ -194,7 +194,7 @@ const Register = () => {
               error={!!errors.confirmPassword}
               helperText={errors.confirmPassword}
             />
-            <TextField
+            {/* <TextField
               fullWidth
               label="Teléfono"
               name="phone"
@@ -206,8 +206,8 @@ const Register = () => {
               error={!!errors.phone}
               helperText={errors.phone || "Ej. válido: +56912345678"}
               placeholder="+56912345678"
-            />
-            <TextField
+            /> */}
+            {/* <TextField
               fullWidth
               label="Dirección"
               name="address"
@@ -218,7 +218,7 @@ const Register = () => {
               onChange={handleChange}
               error={!!errors.address}
               helperText={errors.address || "Ingresa tu dirección completa"}
-            />
+            /> */}
             <Button
               fullWidth
               variant="contained"
