@@ -1,5 +1,5 @@
 export const fetchShippingRates = async (destinationCountyCode) => {
-    const API_URL = 'https://testservices.wschilexpress.com/rating/api/v1.0/rates/courier';
+    const API_URL = 'http://testservices.wschilexpress.com/rating/api/v1.0/rates/courier';
     const API_KEY = import.meta.env.VITE_SUBSCRIPTION_KEY_CX; // Reemplaza por la clave correcta si cambia
   
     // Datos de ejemplo para el paquete

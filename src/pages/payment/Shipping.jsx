@@ -17,6 +17,9 @@ const Shipping = () => {
       const orderId = params.get('order_id');
 
       try {
+
+        clearCart(); // Limpiar el carrito antes de actualizar el estado de la orden
+
         if (transactionStatus === 'success' && orderId) {
           setStatus('success');
           clearCart(); // Limpiar el carrito después de un pago exitoso
