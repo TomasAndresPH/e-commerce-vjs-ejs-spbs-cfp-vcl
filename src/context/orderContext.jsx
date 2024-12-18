@@ -12,14 +12,9 @@ export const OrderProvider = ({ children }) => {
   const { user } = useUser();
   const { clearCart } = useCart();
 
-  const createOrder = async (cartItems) => {
+  const createOrder = async (orderData) => {  // Recibe directamente orderData
     try {
-      const orderData = {
-        customer_id: user.id,
-        items: cartItems
-      };
       const response = await apiCreateOrder(orderData);
-      // Actualizar para manejar la nueva estructura de respuesta
       if (response.success && response.data) {
         setOrders(prev => [response.data, ...prev]);
         clearCart();

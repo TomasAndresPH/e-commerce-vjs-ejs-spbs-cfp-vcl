@@ -48,7 +48,7 @@ function CartPopover({ anchorEl, onClose, onSummary }) {
             }}>
               <ListItemText 
                 primary={item.name} 
-                secondary={`Precio: $${item.price.toFixed(2)}`}
+                secondary={`Precio: $${item.price}`}
               />
               <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, width: '100%', justifyContent: 'space-between' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -67,7 +67,7 @@ function CartPopover({ anchorEl, onClose, onSummary }) {
                   </IconButton>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography sx={{ mr: 1 }}>${(item.price * item.quantity).toFixed(2)}</Typography>
+                  <Typography sx={{ mr: 1 }}>${(item.price * item.quantity)}</Typography>
                   <IconButton 
                     size="small" 
                     onClick={() => removeFromCart(item.id)}
@@ -81,7 +81,7 @@ function CartPopover({ anchorEl, onClose, onSummary }) {
           ))}
         </List>
         <Typography variant="subtitle1" sx={{ mt: 2, fontWeight: 'bold' }}>
-          Total: ${getCartTotal().toFixed(2)}
+          Total: ${getCartTotal()}
         </Typography>
         <Button 
           variant="contained" 
@@ -124,7 +124,7 @@ function CartPopover({ anchorEl, onClose, onSummary }) {
             }}>
               <ListItemText 
                 primary={item.name} 
-                secondary={`Precio: $${item.price.toFixed(2)}`}
+                secondary={`Precio: $${item.price}`}
               />
               <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, width: '100%', justifyContent: 'space-between' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -143,7 +143,7 @@ function CartPopover({ anchorEl, onClose, onSummary }) {
                   </IconButton>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Typography sx={{ mr: 1 }}>${(item.price * item.quantity).toFixed(2)}</Typography>
+                  <Typography sx={{ mr: 1 }}>${(item.price * item.quantity)}</Typography>
                   <IconButton 
                     size="small" 
                     onClick={() => removeFromCart(item.id)}
@@ -157,7 +157,7 @@ function CartPopover({ anchorEl, onClose, onSummary }) {
           ))}
         </List>
         <Typography variant="subtitle1" sx={{ mt: 2, fontWeight: 'bold' }}>
-          Total: ${getCartTotal().toFixed(2)}
+          Total: ${getCartTotal()}
         </Typography>
         <Button 
           variant="contained" 
