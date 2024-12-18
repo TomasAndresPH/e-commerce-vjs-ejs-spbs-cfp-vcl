@@ -154,7 +154,6 @@ export const updateProfile = async (updates) => {
 };
 
 // Ordenes
-// En apiService.js
 export const createOrder = async (orderData) => {
   const token = getToken();
   console.log('Token:', token);
@@ -207,7 +206,7 @@ export const getOrderById = async (orderId) => {
   const token = getToken(); // Obtener el token JWT
 
   try {
-    const response = await fetch(`${WORKER_API_ORDERS}/orders/${orderId}`, {
+    const response = await fetch(`${WORKER_API_ORDERS}/order/${orderId}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`, // Enviar el token en el encabezado de autorización
@@ -366,6 +365,73 @@ export const getTransactionData = async (tokenWs) => {
     return await response.json(); // Devuelve el JSON del backend
   } catch (error) {
     console.error('Error en getTransactionData:', error);
+    throw error;
+  }
+};
+
+export const updateProduct = async (productId, productData) => {
+  const token = getToken();
+  try {
+    const response = await fetch(`${WORKER_API_PRODUCTS}/products/${productId}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(productData),
+    });
+    if (!response.ok) throw new Error('Error al actualizar el producto');
+    return await response.json();
+  } catch (error) {
+    console.error('Error en updateProduct:', error);
+    throw error;
+  }
+};
+
+export const deleteProduct = async (productId) => {
+  const token = getToken();
+  try {
+    const response = await fetch(`${WORKER_API_PRODUCTS}/products/${productId}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) throw new Error('Error al eliminar el producto');
+    return await response.json();
+  } catch (error) {
+    console.error('Error en deleteProduct:', error);
+    throw error;
+  }
+};
+
+export const getOrders = async () => {
+  const token = getToken();
+  try {
+    const response = await fetch(`${WORKER_API_ORDERS}/order`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) throw new Error('Error al obtener las órdenes');
+    const data = await response.json();
+    return data.data; // Asegúrate de devolver el array de órdenes
+  } catch (error) {
+    console.error('Error en getOrders:', error);
+    throw error;
+  }
+};
+
+
+export const getOrderDetails = async (orderId) => {
+  const token = getToken();
+  try {
+    const response = await fetch(`${WORKER_API_ORDERS}/order/order_items/${orderId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) throw new Error('Error al obtener los detalles de la orden');
+    const data = await response.json();
+    return Array.isArray(data.data) ? data.data : []; // Asegúrate de devolver siempre un array
+  } catch (error) {
+    console.error('Error en getOrderDetails:', error);
     throw error;
   }
 };

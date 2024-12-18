@@ -17,7 +17,7 @@ export const OrderProvider = ({ children }) => {
       const response = await apiCreateOrder(orderData);
       if (response.success && response.data) {
         setOrders(prev => [response.data, ...prev]);
-        clearCart();
+        //clearCart();
         return response.data;
       }
     } catch (error) {

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { updateOrderStatus } from '../../apiService';
-import { Container, Typography, Box, Button, CircularProgress, Alert } from '@mui/material';
+import { useCart } from '../../context/cartContext';
+import { Container, Typography, Box, Button, Alert } from '@mui/material';
 
 const Shipping = () => {
   const navigate = useNavigate();
   const [status, setStatus] = useState('processing');
   const [error, setError] = useState('');
+  const { clearCart } = useCart();
 
   useEffect(() => {
     const processTransaction = async () => {
@@ -16,8 +18,9 @@ const Shipping = () => {
 
       try {
         if (transactionStatus === 'success' && orderId) {
-          await updateOrderStatus(orderId, 2);
           setStatus('success');
+          clearCart(); // Limpiar el carrito después de un pago exitoso
+          await updateOrderStatus(orderId, 2);
         } else if (transactionStatus === 'failed') {
           setStatus('failed');
           setError('La transacción no fue autorizada');

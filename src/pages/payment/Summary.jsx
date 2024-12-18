@@ -7,18 +7,15 @@ import { createTransaction } from '../../apiService.js';
 import { useOrder } from '../../context/orderContext.jsx';
 import { useUser } from '../../context/userContext.jsx';
 import logo_webpay from '../../assets/icons&logos/logo_webpay.webp';
+import logo_chilexpress from '../../assets/icons&logos/logo_chilexpress.webp';
 import RemoveShoppingCartOutlinedIcon from '@mui/icons-material/RemoveShoppingCartOutlined';
-
-const regionsAndCommunes = {
-  "Metropolitana": ["Cerrillos", "Cerro Navia", "El Bosque", "Estación Central", "Huechuraba", "Independencia", "La Cisterna", "La Florida", "La Granja", "La Pintana", "La Reina", "Las Condes", "Lo Barnechea", "Lo Espejo", "Lo Prado", "Macul", "Maipú", "Ñuñoa", "Pedro Aguirre Cerda", "Peñalolén", "Providencia", "Pudahuel", "Puente Alto", "Quilicura", "Quinta Normal", "Recoleta", "Renca", "San Bernardo", "San Joaquín", "San José de Maipo", "San Miguel", "San Ramón", "Santiago", "Vitacura"],
-  "Valparaíso": ["Valparaíso", "Viña del Mar", "Quillota"],
-  "Biobío": ["Concepción", "Talcahuano", "Chillán"]
-};
+import regionCodes from '../../utils/sendcodes.json'; // Importar JSON con códigos
+import { fetchShippingRates } from '../../utils/chilexpress'; // Importar la función de envío
 
 const SummaryPage = () => {
   const navigate = useNavigate();
   const { cart, removeFromCart } = useCart();
-  const { createOrder } = useOrder(); // Usamos `createOrder` desde el contexto
+  const { createOrder } = useOrder();
   const { user } = useUser();
   const [discountCode, setDiscountCode] = useState('');
   const [discountApplied, setDiscountApplied] = useState(false);
@@ -29,29 +26,13 @@ const SummaryPage = () => {
   const [showAlert, setShowAlert] = useState(!user);
   const [countdown, setCountdown] = useState(10);
   const [openModal, setOpenModal] = useState(!user);
-  
-
-  useEffect(() => {
-      if (!user) {
-        setShowAlert(true);
-        setOpenModal(true);
-        const timer = setInterval(() => {
-          setCountdown((prev) => prev - 1);
-        }, 1000);
-  
-        if (countdown === 0) {
-          navigate('/login');
-        }
-  
-        return () => clearInterval(timer);
-      }
-    }, [user, countdown, navigate]);
+  const [shippingCost, setShippingCost] = useState(0); // Nuevo estado para el costo del envío
 
   const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const finalTotal = discountApplied
+    ? totalWithDiscount + shippingCost
+    : totalPrice + shippingCost;
 
-  const [totalWithShipping, setTotalWithShipping] = useState(totalPrice);
-
-  
   const [formData, setFormData] = useState({
     firstName: '',
     address: '',
@@ -63,6 +44,45 @@ const SummaryPage = () => {
     saveInfo: false,
     deliveryMethod: ''
   });
+
+  useEffect(() => {
+    if (!user) {
+      setShowAlert(true);
+      setOpenModal(true);
+      const timer = setInterval(() => setCountdown((prev) => prev - 1), 1000);
+
+      if (countdown === 0) {
+        navigate('/login');
+      }
+
+      return () => clearInterval(timer);
+    }
+  }, [user, countdown, navigate]);
+
+  const handleChange = async (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  
+    if (name === 'region') {
+      setFormData((prev) => ({ ...prev, comuna: '' }));
+    }
+  
+    if (name === 'comuna') {
+      console.log(`Nueva comuna seleccionada: ${value}`); // Log para verificar el cambio
+      const regionCode = regionCodes.Regiones[formData.region][value];
+      try {
+        const response = await fetchShippingRates(regionCode);
+        console.log(`Nuevo costo de envío para ${value}: $${response.serviceValue}`); // Log del costo actualizado
+        setShippingCost(Number(response.serviceValue)); // Actualiza el costo del envío
+      } catch (error) {
+        console.error('Error al obtener tarifas de envío:', error);
+        setErrorMessage('Error al calcular el costo de envío');
+      }
+    }
+  };
 
   const handleApplyDiscount = () => {
     if (discountCode === 'DESCUENTO10') {
@@ -79,91 +99,56 @@ const SummaryPage = () => {
     setProceedToPayment(true);
   };
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-    if (name === 'region') setFormData((prev) => ({ ...prev, comuna: '' }));
-  };
+  const handleProceedToPayment = async () => {
+    const buyOrder = `order-${Date.now()}`;
+    const sessionId = `session-${Date.now()}`;
+    const amount = Number(finalTotal);
 
-  const finalTotal = discountApplied
-    ? totalWithDiscount + (formData.deliveryMethod === 'envio' ? 3990 : 0)
-    : totalWithShipping;
+    if (isNaN(amount) || amount <= 0) {
+      setErrorMessage('El monto total no es válido.');
+      return;
+    }
 
-    const handleProceedToPayment = async () => {
-      const buyOrder = `order-${Date.now()}`;
-      const sessionId = `session-${Date.now()}`;
-      const amount = Number(finalTotal);
-    
-      if (isNaN(amount) || amount <= 0) {
-        setErrorMessage('El monto total no es válido.');
-        return;
-      }
-    
-      const transactionData = {
-        buyOrder,
-        sessionId,
-        amount,
-        cart: cart.map(item => ({
-          id: item.id,
-          name: item.name,
-          price: item.price,
-          quantity: item.quantity
-        })),
-        shippingInfo: formData
-      };
-    
-      console.log('Datos de transacción:', transactionData);
-    
-      if (!transactionData.cart.length) {
-        console.error('El carrito está vacío.');
-        setErrorMessage('Error: Carrito vacío');
-        return;
-      }
-    
-      if (!transactionData.shippingInfo.firstName) {
-        console.error('Información de envío incompleta.');
-        setErrorMessage('Error: Información de envío incompleta');
-        return;
-      }
-    
-      try {
-        // 🔄 1. Crear la orden en Hono
-        const createdOrder = await createOrder({
-          customer_id: user.id,
-          items: transactionData.cart.map(item => ({
-            id: item.id,
-            quantity: item.quantity,
-            price: item.price
-          }))
-        });
-    
-        console.log('Orden creada exitosamente:', createdOrder);
-    
-        // 🔄 2. Crear la transacción con Webpay
-        const { token, url } = await createTransaction(transactionData);
-    
-        // 🔄 3. Redirigir a Webpay
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = url;
-    
-        const tokenInput = document.createElement('input');
-        tokenInput.type = 'hidden';
-        tokenInput.name = 'token_ws';
-        tokenInput.value = token;
-        form.appendChild(tokenInput);
-        document.body.appendChild(form);
-        form.submit();
-    
-        console.log('Redirigiendo a Webpay...', form);
-      } catch (error) {
-        console.error('Error en el proceso de pago:', error);
-        setErrorMessage('Hubo un error al iniciar el pago. Intenta de nuevo más tarde.');
-      }
+    const transactionData = {
+      buyOrder,
+      sessionId,
+      amount,
+      cart: cart.map((item) => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity
+      })),
+      shippingInfo: formData
     };
+
+    try {
+      const createdOrder = await createOrder({
+        customer_id: user.id,
+        items: transactionData.cart.map((item) => ({
+          id: item.id,
+          quantity: item.quantity,
+          price: item.price
+        }))
+      });
+
+      const { token, url } = await createTransaction(transactionData);
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = url;
+
+      const tokenInput = document.createElement('input');
+      tokenInput.type = 'hidden';
+      tokenInput.name = 'token_ws';
+      tokenInput.value = token;
+      form.appendChild(tokenInput);
+      document.body.appendChild(form);
+      form.submit();
+    } catch (error) {
+      console.error('Error en el proceso de pago:', error);
+      setErrorMessage('Hubo un error al iniciar el pago. Intenta de nuevo más tarde.');
+    }
+  };
 
   return (
     <Container maxWidth="lg" sx={{ mt: 14, boxShadow: 5, borderRadius: 6, p: 4 }}>
@@ -276,6 +261,7 @@ const SummaryPage = () => {
       </Grid>
 
       {/* Shipping Form */}
+      {/* Shipping Form */}
       {showShippingForm && (
         <Box sx={{ mt: 2, p: 5, boxShadow: 5, borderRadius: 3 }}>
           <Typography variant="h5" gutterBottom>Detalles de Envío</Typography>
@@ -287,8 +273,12 @@ const SummaryPage = () => {
             <Grid item xs={6}>
               <FormControl fullWidth>
                 <InputLabel>Región</InputLabel>
-                <Select name="region" value={formData.region} onChange={handleChange}>
-                  {Object.keys(regionsAndCommunes).map((region) => (
+                <Select 
+                  name="region" 
+                  value={formData.region} 
+                  onChange={handleChange}
+                >
+                  {Object.keys(regionCodes.Regiones).map((region) => (
                     <MenuItem key={region} value={region}>{region}</MenuItem>
                   ))}
                 </Select>
@@ -301,10 +291,10 @@ const SummaryPage = () => {
                   name="comuna"
                   value={formData.comuna}
                   onChange={handleChange}
-                  disabled={!formData.region}
+                  disabled={!formData.region} // Deshabilita si no se seleccionó una región
                 >
-                  {formData.region && regionsAndCommunes[formData.region].map((comuna) => (
-                    <MenuItem key={comuna} value={comuna}>{comuna}</MenuItem>
+                  {formData.region && Object.entries(regionCodes.Regiones[formData.region]).map(([comuna, code]) => (
+                    <MenuItem key={code} value={comuna}>{comuna}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -317,33 +307,35 @@ const SummaryPage = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <FormControl fullWidth>
-                <InputLabel>Método de Entrega</InputLabel>
-                <Select
-                  name="deliveryMethod"
-                  value={formData.deliveryMethod || ''}
-                  onChange={(e) => {
-                    handleChange(e);
-                    if (e.target.value === 'envio') {
-                      setTotalWithShipping(totalPrice + 3990);
-                    } else {
-                      setTotalWithShipping(totalPrice);
-                    }
+              <Box 
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: 2,
+                  border: '1px solidrgb(255, 255, 255)',
+                  borderRadius: 2,
+                  boxShadow: 2,
+                }}
+              >
+                <Typography variant="h6">
+                  El costo de envío es de: ${shippingCost}
+                </Typography>
+                <Box
+                  component="img"
+                  src={logo_chilexpress}// Cambia esta ruta por la correcta
+                  alt="Chilexpress Logo"
+                  sx={{
+                    width: 150, // Ajusta el tamaño del logo
+                    height: 'auto'
                   }}
-                  disabled={!formData.region} // Deshabilita hasta que se seleccione una región
-                >
-                  <MenuItem value="retiro" disabled>
-                    Retiro en tienda (solo mediante comunicación por WhatsApp)
-                  </MenuItem>
-                  <MenuItem value="envio">
-                    Envío general {formData.region && `(${formData.region})`} - $3.990
-                  </MenuItem>
-                </Select>
-              </FormControl>
+                />
+              </Box>
             </Grid>
           </Grid>
         </Box>
       )}
+
       {/* Modal para iniciar sesión */}
       <Modal
         open={openModal}

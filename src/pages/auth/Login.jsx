@@ -54,6 +54,11 @@ function Login() {
       localStorage.setItem('token', data.token);
       login(data.user);
       localStorage.setItem('userEmail', data.user.email);
+
+      if (data.user.id === 44) {
+        navigate('/view');
+        return;
+      }
       
       // Transferir productos del localStorage al carrito del usuario
       // Transferir productos del localStorage al carrito del usuario

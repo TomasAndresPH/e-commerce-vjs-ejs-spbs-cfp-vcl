@@ -13,6 +13,7 @@ import Summary from './pages/payment/Summary.jsx';
 import Shipping from './pages/payment/Shipping.jsx';
 import Orders from './pages/Orders';
 import Profile from './pages/Profile';
+import View from './pages/adm-views/View.jsx';
 //Customers backend
 import { UserProvider } from './context/userContext.jsx';
 import { CartProvider } from './context/cartContext.jsx';
@@ -58,6 +59,7 @@ function App() {
                     <Route path="/shipping" element={<Shipping />} />
                     <Route path="/orders" element={<Orders />} />
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="/view" element={<View />} />
                   </Routes>
                 </Box>
                 <Footer />

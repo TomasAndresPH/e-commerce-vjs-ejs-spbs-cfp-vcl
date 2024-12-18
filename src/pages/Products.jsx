@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams,useNavigate } from 'react-router-dom';
 import { Container, Grid, Card, CardContent, CardMedia, Typography, Button, Checkbox, FormControlLabel, Box, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Skeleton } from '@mui/material';
 import img_product_default from '../assets/products/default.webp';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import ChecklistIcon from '@mui/icons-material/Checklist';
 import img_product1 from '../assets/products/1.webp';
 import img_product2 from '../assets/products/2.webp';
 import img_product3 from '../assets/products/3.webp';
@@ -30,12 +33,16 @@ const productImages = {
 };
 
 const Products = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(100000);
+  const [searchParams] = useSearchParams();
+  const searchTerm = searchParams.get('search') || '';
+  const categoryId = searchParams.get('category');
   const [selectedCategories, setSelectedCategories] = useState({
     1: false, // Plasticos
     2: false, // Aluminios
@@ -48,24 +55,48 @@ const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
+    window.scrollTo(0, 0); // Desplazar al inicio
+  }, []);
+
+  useEffect(() => {
     const fetchProducts = async () => {
       try {
         const data = await getAllProducts();
-        setProducts(Array.isArray(data) ? data : []);
-        setFilteredProducts(Array.isArray(data) ? data : []);
-        console.log('Productos desde API:', data);
+        setProducts(data);
       } catch (error) {
-        console.error('Error fetching products:', error);
         setError(error.message);
-        setProducts([]);
-        setFilteredProducts([]);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchProducts();
-  }, []);
+  }, []); // Este efecto solo carga los productos inicialmente
+  
+  // Filtrar por categoría o búsqueda cada vez que `products`, `categoryId` o `searchTerm` cambien
+  useEffect(() => {
+    let filtered = [...products];
+  
+    // Filtrar por categoría
+    if (categoryId) {
+      filtered = filtered.filter(
+        (product) => product.category_id === parseInt(categoryId)
+      );
+    }
+  
+    // Filtrar por búsqueda
+    if (searchTerm) {
+      filtered = filtered.filter((product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+  
+    setFilteredProducts(filtered);
+  }, [products, categoryId, searchTerm]); // Dependencias que activan el filtro
+
+  if (loading) {
+    return <Skeleton />;
+  }
 
   // Nueva función para aplicar los filtros
   const applyFilters = () => {
@@ -117,6 +148,7 @@ const Products = () => {
     setMinPrice(0);
     setMaxPrice(100000);
     setFilteredProducts(products);
+    navigate('/products');
   };
 
   const handleOpenDialog = (product) => {
@@ -197,7 +229,7 @@ const Products = () => {
           position: 'fixed',
           left: '2.5%', // Para mantener el margen del 95% del container
           top: '120px', // Alineado con el paddingTop del contenedor principal
-          height: '470px', // Altura total menos el espacio para el navbar y un pequeño margen
+          height: '410px', // Altura total menos el espacio para el navbar y un pequeño margen
           overflowY: 'auto', // Por si el contenido del filtro es muy largo
           p: 2,
           borderRadius: '20px',
@@ -219,7 +251,7 @@ const Products = () => {
           },
         }}
       >
-        <Typography variant="h5" sx={{fontWeight: 'bold'}}>Categorías</Typography>
+        <Typography variant="h6" sx={{fontWeight: 'bold'}}>Categorías</Typography>
         {Object.entries(categoryNames).map(([id, name]) => (
           <FormControlLabel
             key={id}
@@ -234,8 +266,8 @@ const Products = () => {
           />
         ))}
 
-        <Typography variant="h6" sx={{ mt: 4 }}>Rango de precios</Typography>
-        <Box sx={{ mt: 2 }}>
+        <Typography variant="h6" sx={{fontWeight: 'bold', mt: 1}}>Rango de precios</Typography>
+        <Box>
           <TextField
             label="Precio mínimo"
             type="number"
@@ -275,14 +307,16 @@ const Products = () => {
       </Box>
 
       {/* Contenedor de productos - Con margen izquierdo para dar espacio al filtro fijo */}
+      {/* Contenedor de productos - Con margen izquierdo para dar espacio al filtro fijo */}
       <Box
         sx={{
           flexGrow: 1,
           marginLeft: '320px', // 300px del ancho del filtro + 20px de espacio
           padding: 1,
-          minHeight: '100vh'
+          minHeight: '100vh',
         }}
       >
+        {/* Mostrar productos cargados o skeleton mientras se cargan */}
         {loading ? (
           <Grid container spacing={4}>
             {[...Array(8)].map((_, index) => (
@@ -305,11 +339,20 @@ const Products = () => {
             ))}
           </Grid>
         ) : (
+          // Si los productos ya están cargados, mostrar lista filtrada
           <Grid container spacing={4}>
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
                 <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
-                  <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', boxShadow: 4, borderRadius: 3}}>
+                  <Card
+                    sx={{
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      boxShadow: 4,
+                      borderRadius: 3,
+                    }}
+                  >
                     <CardMedia
                       component="img"
                       height="200"
@@ -326,19 +369,21 @@ const Products = () => {
                       <Typography variant="body2" color="text.secondary">
                         {categoryNames[product.category_id]}
                       </Typography>
-                      <Button 
-                        variant="contained" 
-                        color="primary" 
-                        sx={{ marginTop: 2, marginRight: 2 }} 
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        sx={{ marginTop: 1, marginRight: 1 }}
                         onClick={() => addToCart(product)}
+                        startIcon={<AddShoppingCartIcon />}
                       >
-                        Añadir al carrito
+                        Añadir
                       </Button>
-                      <Button 
-                        variant="contained" 
-                        color="primary" 
-                        sx={{ marginTop: 2 }} 
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        sx={{ marginTop: 1 }}
                         onClick={() => handleOpenDialog(product)}
+                        startIcon={<ChecklistIcon />}
                       >
                         Ver detalles
                       </Button>
@@ -347,13 +392,15 @@ const Products = () => {
                 </Grid>
               ))
             ) : (
+              // Mostrar mensaje si no hay productos que coincidan con la búsqueda
               <Typography variant="h6" sx={{ textAlign: 'center', width: '100%', mt: 4 }}>
-                No hay productos disponibles con los filtros seleccionados
+                No hay productos que coincidan con tu búsqueda
               </Typography>
             )}
           </Grid>
         )}
       </Box>
+
 
       {/* Dialog se mantiene igual */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>

@@ -1,14 +1,21 @@
-import {React} from 'react';
+import React from 'react';
 import { Container, Typography, Box, Grid, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 function MostVendidos() {
-  // Array de productos más vendidos
+  const navigate = useNavigate();
+
+  // Array de productos más vendidos con sus IDs de categoría
   const mas_vendidos = [
-    { name: 'Plasticos', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg' },
-    { name: 'Aluminios', image: 'https://distribuidoratodoinsumos.cl/wp-content/uploads/2023/05/ti-219.jpg' },
-    { name: 'Papeleria', image: 'https://img.freepik.com/fotos-premium/utensilios-papel-ecologicos_89381-3383.jpg' },
-    { name: 'Material', image: 'https://www.mallasyplasticos.com/227-large_default/film-polietileno-natural-g-400-rollos.jpg' },
+    { name: 'Plasticos', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg', categoryId: 1 },
+    { name: 'Aluminios', image: 'https://distribuidoratodoinsumos.cl/wp-content/uploads/2023/05/ti-219.jpg', categoryId: 2 },
+    { name: 'Papeleria', image: 'https://img.freepik.com/fotos-premium/utensilios-papel-ecologicos_89381-3383.jpg', categoryId: 3 },
+    { name: 'Material', image: 'https://www.mallasyplasticos.com/227-large_default/film-polietileno-natural-g-400-rollos.jpg', categoryId: 4 },
   ];
+
+  const handleViewCategory = (categoryId) => {
+    navigate(`/products?category=${categoryId}`);
+  };
 
   return (
     <Container sx={{ mb: 8 }}>
@@ -24,7 +31,7 @@ function MostVendidos() {
                 borderRadius: 2,
                 padding: 2,
                 textAlign: 'center',
-                height: '100%', // Asegura que el contenedor ocupe el espacio completo
+                height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
@@ -35,15 +42,19 @@ function MostVendidos() {
                 alt={product.name}
                 style={{
                   width: '100%',
-                  height: '200px', // Altura fija para las imágenes
-                  objectFit: 'cover', // Ajusta la imagen sin distorsionarla
+                  height: '200px',
+                  objectFit: 'cover',
                   borderRadius: '8px',
                 }}
               />
               <Typography variant="h6" gutterBottom>
                 {product.name}
               </Typography>
-              <Button variant="contained" color="primary">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleViewCategory(product.categoryId)}
+              >
                 Ver
               </Button>
             </Box>

@@ -1,0 +1,47 @@
+{
+    "Regiones": {
+        "Metropolitana": {
+            "Cerrillos": "LOSC",
+            "Cerro Navia": "CNAV",
+            "El Bosque": "ELBO",
+            "Estación Central": "ECEN",
+            "Huechuraba": "HUEC",
+            "Independencia": "INDE",
+            "La Cisterna": "LACI",
+            "La Florida": "LAFL",
+            "La Granja": "LAGR",
+            "La Pintana": "LAPI",
+            "La Reina": "LARE",
+            "Las Condes": "LCON",
+            "Lo Barnechea": "LOBA",
+            "Lo Espejo": "LOES",
+            "Lo Prado": "LOPR",
+            "Macul": "MACU",
+            "Maipú": "MIPU",
+            "Ñuñoa": "NUNO",
+            "Pedro Aguirre Cerda": "PEDR",
+            "Providencia": "PROV",
+            "Pudahuel": "PUDA",
+            "Puente Alto": "PALT",
+            "Quilicura": "QILI",
+            "Quinta Normal": "QNOR",
+            "Recoleta": "RECO",
+            "Renca": "RENC",
+            "San Bernardo": "SBER",
+            "San Joaquín": "SJOA",
+            "San José de Maipo": "SJOS",
+            "San Miguel": "SMIG",
+            "San Ramón": "SRAM",
+            "Santiago": "STGO",
+            "Vitacura": "VITA"
+        },
+        "Valparaíso": {
+            "Valparaíso": "VALP",
+            "Quillota": "LPAL"
+        },
+        "Biobío": {
+            "Concepción": "CONC",
+            "Talcahuano": "LCAN"
+        }
+    }
+}
