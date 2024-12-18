@@ -3,7 +3,7 @@ const WORKER_API_PRODUCTS = import.meta.env.VITE_WORKER_API_PRODUCTS;
 const WORKER_API_AUTH = import.meta.env.VITE_WORKER_API_AUTH;
 const WORKER_API_CART = import.meta.env.VITE_WORKER_API_CART;
 const WORKER_API_ORDERS = import.meta.env.VITE_WORKER_API_ORDERS;
-const WEBPAY_API_BASE = `${API_BASE_URL}/webpay`;
+const WEBPAY_API_BASE = import.meta.env.VITE_WEBPAY_API;
 
 // Función utilitaria para obtener el token JWT almacenado
 const getToken = () => localStorage.getItem('token');
