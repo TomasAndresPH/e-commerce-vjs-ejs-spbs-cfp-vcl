@@ -14,11 +14,6 @@ import img_product7 from '../assets/products/7.webp';
 import img_product8 from '../assets/products/8.webp';
 import img_product9 from '../assets/products/9.webp';
 import img_product10 from '../assets/products/10.webp';
-
-import { getAllProducts } from '../apiService';
-import { useCart } from '../context/cartContext.jsx';
-
-// Crear un mapa de imágenes basado en el id
 const productImages = {
   1: img_product1,
   2: img_product2,
@@ -31,6 +26,11 @@ const productImages = {
   9: img_product9,
   10: img_product10,
 };
+
+import { getAllProducts } from '../apiService';
+import { useCart } from '../context/cartContext.jsx';
+
+// Crear un mapa de imágenes basado en el id
 
 const Products = () => {
   const navigate = useNavigate();

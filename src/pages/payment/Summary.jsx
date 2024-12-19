@@ -11,6 +11,7 @@ import logo_chilexpress from '../../assets/icons&logos/logo_chilexpress.webp';
 import RemoveShoppingCartOutlinedIcon from '@mui/icons-material/RemoveShoppingCartOutlined';
 import regionCodes from '../../utils/sendcodes.json'; // Importar JSON con códigos
 import { fetchShippingRates } from '../../utils/chilexpress'; // Importar la función de envío
+import productImages from '../../utils/productImages.js'; // Importa las imágenes de los productos
 
 const SummaryPage = () => {
   const navigate = useNavigate();
@@ -180,7 +181,14 @@ const SummaryPage = () => {
               <TableBody>
                 {cart.map((item) => (
                   <TableRow key={item.id}>
-                    <TableCell><img src={item.image} alt={item.name} width="20" /></TableCell>
+                    <TableCell>
+                      <img
+                        src={productImages[item.id]} 
+                        alt={item.name} 
+                        width="50" 
+                        height="50" 
+                      />
+                    </TableCell>
                     <TableCell>{item.name}</TableCell>
                     <TableCell align="right">${item.price}</TableCell>
                     <TableCell align="right">{item.quantity}</TableCell>
@@ -307,27 +315,35 @@ const SummaryPage = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Box 
+              <Box
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   padding: 2,
-                  border: '1px solidrgb(255, 255, 255)',
+                  border: '1px solid rgb(255, 255, 255)',
                   borderRadius: 2,
                   boxShadow: 2,
+                  flexDirection: { xs: 'column', sm: 'row' }, // Stack on small screens
                 }}
               >
-                <Typography variant="h6">
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontSize: { xs: '16px', sm: '20px', md: '24px' }, // Adjust font size
+                    textAlign: { xs: 'center', sm: 'left' }, // Center align on small screens
+                  }}
+                >
                   El costo de envío es de: ${shippingCost}
                 </Typography>
                 <Box
                   component="img"
-                  src={logo_chilexpress}// Cambia esta ruta por la correcta
+                  src={logo_chilexpress} // Replace with the actual path
                   alt="Chilexpress Logo"
                   sx={{
-                    width: 150, // Ajusta el tamaño del logo
-                    height: 'auto'
+                    width: { xs: 100, sm: 120, md: 150 }, // Adjust size for responsiveness
+                    height: 'auto',
+                    marginTop: { xs: 2, sm: 0 }, // Add margin on small screens for better spacing
                   }}
                 />
               </Box>

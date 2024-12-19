@@ -7,15 +7,15 @@ export const fetchShippingRates = async (destinationCountyCode) => {
       originCountyCode: 'STGO', // Código fijo de origen (Santiago)
       destinationCountyCode,    // Código dinámico basado en la comuna del usuario
       package: {
-        weight: '16',           // Peso fijo del paquete
+        weight: '5',           // Peso fijo del paquete
         height: '1',
         width: '1',
         length: '1'
       },
       productType: 3,            // Producto fijo
-      contentType: 1,            // Tipo de contenido fijo
-      declaredWorth: '2333',     // Valor declarado del paquete
-      deliveryTime: 3            // Tiempo estimado de entrega
+      contentType: 2,            // Tipo de contenido fijo
+      declaredWorth: '3000',     // Valor declarado del paquete
+      deliveryTime: 3           // Tiempo estimado de entrega
     };
   
     try {
