@@ -20,10 +20,14 @@ function CartPopover({ anchorEl, onClose, isMobile, drawerOpen, toggleDrawer }) 
   };
 
   const handleProceedToSummary = () => {
-    if (isMobile) toggleDrawer(false); // Cierra el Drawer en móvil
-    onClose(); // Cierra el Popover en escritorio
+    if (isMobile) {
+      toggleDrawer(false)(); // Cierra el Drawer en móvil
+    } else if (onClose) {
+      onClose(); // Cierra el Popover en escritorio
+    }
     navigate('/summary'); // Redirige a la página de pago
   };
+  
 
   const CartContent = () => (
     <Box sx={{ p: 2, width: isMobile ? '60vw' : 300 }}>

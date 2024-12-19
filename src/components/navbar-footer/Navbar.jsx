@@ -20,11 +20,12 @@ const Navbar = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const toggleDrawer = (open) => (event) => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+    if (event && (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift'))) {
       return;
     }
     setDrawerOpen(open);
   };
+  
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
 
   const theme = useTheme();
@@ -85,7 +86,7 @@ const Navbar = () => {
   const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const toggleCartDrawer = (open) => (event) => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+    if (event && (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift'))) {
       return;
     }
     setCartDrawerOpen(open);
