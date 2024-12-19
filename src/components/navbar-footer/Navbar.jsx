@@ -1,22 +1,34 @@
 //navbar
 import React, { useContext, useState } from 'react';
-import { AppBar, Toolbar, TextField, Button, Badge, Box, Typography, IconButton, Avatar, Menu, MenuItem, ListItem } from '@mui/material';
+import { AppBar, Toolbar, TextField, Button, Badge, Box, Typography, IconButton, Avatar, Menu, MenuItem, ListItem, Drawer, List, ListItemText, Divider } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import MenuIcon from '@mui/icons-material/Menu';
 import { PersonOutline as PersonOutlineIcon, List as ListIcon, Logout as LogoutIcon, Login as LoginIcon, HowToReg as HowToRegIcon, ShoppingCart as ShoppingCartIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/userContext.jsx';
 import { useCart } from '../../context/cartContext.jsx';
 import CartPopover from '../carrito/CartPopover.jsx';
 import avatar from '../../assets/icons&logos/avatardefault.webp';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 const Navbar = () => {
-
   const navigate = useNavigate();
   const { user, logout } = useUser();
   const { cart } = useCart();
   const [anchorEl, setAnchorEl] = useState(null);
   const [cartAnchorEl, setCartAnchorEl] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const toggleDrawer = (open) => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+    setDrawerOpen(open);
+  };
+  const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -29,6 +41,7 @@ const Navbar = () => {
   const handleMenuItemClick = (path) => {
     navigate(path);
     handleMenuClose();
+    setDrawerOpen(false);
   };
 
   const handleLogout = () => {
@@ -45,22 +58,8 @@ const Navbar = () => {
   const handleCartClose = () => {
     setCartAnchorEl(null);
   };
-  // const truncateName = (name) => {
-  //   return name.length > 8 ? name.substring(0, 8) : name;
-  // };
-
-  const handleProceedToCheckout = () => {
-    handleCartClose();
-    navigate('/checkout');
-  };
-
-  const handleProceedToSummary = () => {
-    handleCartClose();
-    navigate('/summary');
-  };
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -72,106 +71,156 @@ const Navbar = () => {
     }
   };
 
+  const handleProceedToCheckout = () => {
+    handleCartClose();
+    navigate('/checkout');
+  };
+
+  const handleProceedToSummary = () => {
+    handleCartClose();
+    navigate('/summary');
+  };
+
+
+  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const toggleCartDrawer = (open) => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+    setCartDrawerOpen(open);
+  };
+
   return (
     <AppBar
       position="fixed"
       sx={{
         boxShadow: 10,
-        backgroundImage: 'linear-gradient(to right, #0d7510, #0aa30e)', // Degradado de izquierda a derecha
-        padding: '0 20px', // Añadido padding para la consistencia
-        borderBottomLeftRadius: '20px', // Valor para redondear esquina inferior izquierda
-        borderBottomRightRadius: '20px', // Valor para redondear esquina inferior derecha
+        backgroundImage: 'linear-gradient(to right, #0d7510, #0aa30e)',
+        padding: '0 20px',
+        borderBottomLeftRadius: '20px',
+        borderBottomRightRadius: '20px',
       }}
     >
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        {/* Imagen de la tienda */}
-        <Box sx={{ display: 'flex', alignItems: 'center' }} >
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Button href="/">
             <img
               src="https://ecoplastics.store/wp-content/uploads/2022/09/blanco-01.png"
               alt="Logo de la tienda"
-              style={{ height: '60px', objectFit: 'contain' }} // Ajusta el tamaño según sea necesario
+              style={{ height: '60px', objectFit: 'contain' }}
             />
           </Button>
         </Box>
-
-        {/* Contenedor de los elementos de la derecha */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          {/* Input de búsqueda con estilo outlined en blanco */}
-          <Box sx={{ display: 'flex', alignItems: 'center', width: '300px' }}>
-            <TextField
-              variant="outlined"
-              placeholder="Buscar productos..."
-              size="small"
-              value={searchTerm}
-              onChange={handleSearchChange}
-              onKeyDown={handleSearchSubmit}
-              InputProps={{
-                startAdornment: <SearchIcon sx={{ mr: 1, color: 'white' }} />,
-                style: { color: 'white', borderColor: 'white' },
-              }}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': { borderColor: 'white' },
-                  '&:hover fieldset': { borderColor: 'white' },
-                  '&.Mui-focused fieldset': { borderColor: 'white' },
-                },
-              }}
+  
+        {isMobile ? (
+          <>
+            <IconButton onClick={toggleDrawer(true)} color="inherit">
+              <MenuIcon />
+            </IconButton>
+            <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
+              <Box
+                sx={{ width: 250 }}
+                role="presentation"
+                onClick={toggleDrawer(false)}
+                onKeyDown={toggleDrawer(false)}
+              >
+                <List>
+                  {user ? (
+                    <>
+                      <ListItem button onClick={() => handleMenuItemClick('/profile')}>
+                        <PersonOutlineIcon sx={{ mr: 1 }} />
+                        <ListItemText primary="Perfil" />
+                      </ListItem>
+                      <ListItem button onClick={() => handleMenuItemClick('/orders')}>
+                        <ListIcon sx={{ mr: 1 }} />
+                        <ListItemText primary="Pedidos" />
+                      </ListItem>
+                      <ListItem button onClick={handleLogout}>
+                        <LogoutIcon sx={{ mr: 1 }} />
+                        <ListItemText primary="Logout" />
+                      </ListItem>
+                    </>
+                  ) : (
+                    <>
+                      <ListItem button onClick={() => handleMenuItemClick('/login')}>
+                        <LoginIcon sx={{ mr: 1 }} />
+                        <ListItemText primary="Iniciar sesión" />
+                      </ListItem>
+                      <ListItem button onClick={() => handleMenuItemClick('/register')}>
+                        <HowToRegIcon sx={{ mr: 1 }} />
+                        <ListItemText primary="Registrarse" />
+                      </ListItem>
+                    </>
+                  )}
+                </List>
+                <Divider />
+                <List>
+                  {/* Cambiar el evento onClick para abrir el Drawer del carrito */}
+                  <ListItem button onClick={toggleCartDrawer(true)}>
+                    <ShoppingCartIcon sx={{ mr: 1 }} />
+                    <ListItemText primary={`Carrito (${totalItems})`} />
+                  </ListItem>
+                </List>
+              </Box>
+            </Drawer>
+  
+            {/* Drawer para el carrito en modo móvil */}
+            <CartPopover
+              isMobile={isMobile}
+              drawerOpen={cartDrawerOpen}
+              toggleDrawer={toggleCartDrawer}
             />
-          </Box>
-          {/* Botón del carrito de compras */}
-          <IconButton
-            aria-label="cart"
-            onClick={handleCartOpen}
-            color="inherit"
-          >
-            <Badge badgeContent={totalItems} color="secondary">
-              <ShoppingCartIcon />
-            </Badge>
-          </IconButton>
-          <CartPopover
-            open={Boolean(cartAnchorEl)}
-            anchorEl={cartAnchorEl}
-            onClose={handleCartClose}
-            onSummary={handleProceedToSummary}
-          />
-          {/* Menú de usuario */}
-          <Box>
-            <Avatar
-              src={avatar}
-              onClick={handleMenuOpen}
-              sx={{ cursor: 'pointer' }}
+          </>
+        ) : (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', width: '300px' }}>
+              <TextField
+                variant="outlined"
+                placeholder="Buscar productos..."
+                size="small"
+                value={searchTerm}
+                onChange={handleSearchChange}
+                onKeyDown={handleSearchSubmit}
+                InputProps={{
+                  startAdornment: <SearchIcon sx={{ mr: 1, color: 'white' }} />,
+                  style: { color: 'white', borderColor: 'white' },
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '& fieldset': { borderColor: 'white' },
+                    '&:hover fieldset': { borderColor: 'white' },
+                    '&.Mui-focused fieldset': { borderColor: 'white' },
+                  },
+                }}
+              />
+            </Box>
+            <IconButton aria-label="cart" onClick={handleCartOpen} color="inherit">
+              <Badge badgeContent={totalItems} color="secondary">
+                <ShoppingCartIcon />
+              </Badge>
+            </IconButton>
+            <CartPopover
+              open={Boolean(cartAnchorEl)}
+              anchorEl={cartAnchorEl}
+              onClose={handleCartClose}
             />
+            <Avatar src={avatar} onClick={handleMenuOpen} sx={{ cursor: 'pointer' }} />
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
-              PaperProps={{
-                elevation: 0,
-                sx: {
-                  mt: 1.5,
-                  '& .MuiMenuItem-root': {
-                    transition: 'background-color 0.3s',
-                    '&:hover': {
-                      backgroundColor: 'primary.main', // Verde oscuro
-                      color: 'secondary.main', // Blanco para el texto
-                    },
-                  },
-                },
-              }}
             >
               {user ? (
                 <>
                   <MenuItem key="profile" onClick={() => handleMenuItemClick('/profile')}>
-                    <PersonOutlineIcon fontSize="small" sx={{ mr: 1 }} /> {/* Margen a la derecha del icono */}
+                    <PersonOutlineIcon fontSize="small" sx={{ mr: 1 }} />
                     Perfil
                   </MenuItem>
-
                   <MenuItem key="orders" onClick={() => handleMenuItemClick('/orders')}>
                     <ListIcon fontSize="small" sx={{ mr: 1 }} />
                     Pedidos
                   </MenuItem>
-
                   <MenuItem key="logout" onClick={handleLogout}>
                     <LogoutIcon fontSize="small" sx={{ mr: 1 }} />
                     Logout
@@ -183,7 +232,6 @@ const Navbar = () => {
                     <LoginIcon fontSize="small" sx={{ mr: 1 }} />
                     Iniciar sesión
                   </MenuItem>
-
                   <MenuItem key="register" onClick={() => handleMenuItemClick('/register')}>
                     <HowToRegIcon fontSize="small" sx={{ mr: 1 }} />
                     Registrarse
@@ -192,10 +240,10 @@ const Navbar = () => {
               )}
             </Menu>
           </Box>
-        </Box>
+        )}
       </Toolbar>
     </AppBar>
-  );
+  );  
 };
 
 export default Navbar;
