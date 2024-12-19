@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Container, Grid, TextField, Button, Typography, Box } from '@mui/material';
+import { Container, Grid, TextField, Button, Typography, Box, Link } from '@mui/material';
 import { useUser } from '../../context/userContext.jsx';
 import { useCart } from '../../context/cartContext.jsx';
 import { login as apiLogin, addToCart } from '../../apiService';
@@ -107,42 +107,78 @@ function Login() {
 
 
   return (
-    <Container maxWidth="md" sx={{ display: 'flex', justifyContent: 'center', height: '100vh', alignItems: 'center' }}>
-      <Grid container spacing={4} sx={{ boxShadow: 10, borderRadius: 10, padding: 4 }}>
+    <Container
+      maxWidth="md"
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        height: '100vh',
+        alignItems: 'center',
+        marginTop: { xs: 9, md: 0 },
+        marginBottom: { xs: 3, md: 0 }, // Add margin for smaller screens
+      }}
+    >
+      <Grid
+        container
+        spacing={0}
+        sx={{
+          boxShadow: 10,
+          borderRadius: 10,
+          padding: 4,
+        }}
+      >
         <Grid item xs={12} md={6}>
-          <Box component="form" onSubmit={handleSubmit} display="flex" flexDirection="column" justifyContent="center" height="100%">
-            <Typography variant="h4" gutterBottom>Inicia Sesión 🙌</Typography>
-            <TextField 
-              fullWidth 
-              label="Correo electrónico" 
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            height="100%"
+          >
+            <Typography variant="h4" gutterBottom>
+              Inicia Sesión 🙌
+            </Typography>
+            <TextField
+              fullWidth
+              label="Correo electrónico"
               name="email"
-              variant="outlined" 
-              margin="normal" 
+              variant="outlined"
+              margin="normal"
               value={formData.email}
               onChange={handleChange}
               error={!!errors.email}
-              helperText={errors.email || "Ejemplo: email@gmail.cl"}
+              helperText={errors.email || 'Ejemplo: email@gmail.cl'}
               required
             />
-            <TextField 
-              fullWidth 
-              label="Contraseña" 
+            <TextField
+              fullWidth
+              label="Contraseña"
               name="password"
-              type="password" 
-              variant="outlined" 
-              margin="normal" 
+              type="password"
+              variant="outlined"
+              margin="normal"
               value={formData.password}
               onChange={handleChange}
               error={!!errors.password}
               helperText={errors.password}
               required
             />
-            <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 2, mb: 1 }}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2, mb: 1 }}
+            >
               Iniciar Sesión
             </Button>
-            
-            <Typography variant="body2" align="center">
-              ¿Aún no tienes cuenta? <a href="/register">Regístrate aquí</a>
+
+            <Typography align="center">
+              ¿No tienes cuenta? 
+                <Link sx={{ml: 0.5}} href="/register" underline="hover">
+                  Regístrate aquí
+                </Link>
             </Typography>
           </Box>
         </Grid>

@@ -131,8 +131,8 @@ const Register = () => {
   };
   
   return (
-    <Container maxWidth="md" sx={{ display: 'flex', justifyContent: 'center', minHeight: '100vh', alignItems: 'center', py: 4, pt: 12 }}>
-      <Grid container spacing={4} sx={{ boxShadow: 10, borderRadius: 10, padding: 4 }}>
+    <Container maxWidth="md" sx={{ display: 'flex', justifyContent: 'center', minHeight: '100vh', alignItems: 'center', py: 4, pt: 7}}>
+      <Grid container spacing={0} sx={{ boxShadow: 10, borderRadius: 10, padding: 4 }}>
         <Grid item xs={12} md={6}>
           <Typography variant="h4" gutterBottom>
             Regístrate 👋
@@ -164,7 +164,6 @@ const Register = () => {
               error={!!errors.email}
               helperText={errors.email || "email@gmail.com"}
             />
-            32232ASDADSAAsa!
             <TextField
               fullWidth
               label="Contraseña"
@@ -230,7 +229,7 @@ const Register = () => {
             </Button>
           </Box>
 
-          <Typography sx={{ mt: 2 }}>
+          <Typography sx={{ mt: 2 }} align='center'>
             ¿Ya tienes cuenta?{' '}
             <Link href="/login" underline="hover">
               Inicia sesión aquí
