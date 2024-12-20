@@ -1,7 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams,useNavigate } from 'react-router-dom';
-import { Container, Grid, Card, CardContent, CardMedia, Typography, Button, Checkbox, FormControlLabel, Box, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Skeleton } from '@mui/material';
+import { Container,
+  Grid,
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Box,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Skeleton,
+  useMediaQuery,
+  Drawer,
+  IconButton } from '@mui/material';
 import img_product_default from '../assets/products/default.webp';
+import FilterListIcon from "@mui/icons-material/FilterList";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import img_product1 from '../assets/products/1.webp';
@@ -49,7 +68,8 @@ const Products = () => {
     3: false, // Papeleria
     4: false, // Material
   });
-
+  const [drawerOpen, setDrawerOpen] = useState(false); // Estado para el Drawer
+  const isMobile = useMediaQuery("(max-width: 900px)"); // Detectar ancho de pantalla
   const { addToCart } = useCart();
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -212,62 +232,117 @@ const Products = () => {
     4: 'Material'
   };
 
+  const Filters = () => (
+    <Box sx={{ p: 2, width: isMobile ? "80vw" : "250px" }}>
+      <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+        Categorías
+      </Typography>
+      {Object.entries(categoryNames).map(([id, name]) => (
+        <FormControlLabel
+          key={id}
+          control={
+            <Checkbox
+              checked={selectedCategories[id]}
+              onChange={(e) =>
+                setSelectedCategories({
+                  ...selectedCategories,
+                  [e.target.name]: e.target.checked,
+                })
+              }
+              name={id}
+            />
+          }
+          label={name}
+        />
+      ))}
+      <Typography variant="h6" sx={{ fontWeight: "bold", mt: 1 }}>
+        Rango de precios
+      </Typography>
+      <Box>
+        <TextField
+          label="Precio mínimo"
+          type="number"
+          value={minPrice}
+          onChange={(e) => setMinPrice(Math.max(0, Number(e.target.value)))}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Precio máximo"
+          type="number"
+          value={maxPrice}
+          onChange={(e) => setMaxPrice(Math.max(0, Number(e.target.value)))}
+          fullWidth
+          margin="normal"
+        />
+      </Box>
+      <Button variant="contained" color="primary" fullWidth sx={{ mb: 2 }} onClick={applyFilters}>
+        Aplicar filtros
+      </Button>
+      <Button variant="outlined" color="primary" fullWidth onClick={() => setFilteredProducts(products)}>
+        Limpiar filtros
+      </Button>
+    </Box>
+  );
+
   return (
     <Box 
       sx={{
         display: 'flex',
         width: '100%',
         minHeight: '100vh',
-        paddingTop: '80px', // Para el navbar
+        paddingTop: '80px',
         bgcolor: 'background.default'
       }}
     >
-      {/* Filtros - Ahora con position fixed */}
-      <Box
-        sx={{
-          width: '250px', // Ancho fijo en lugar de porcentaje
-          position: 'fixed',
-          left: '2.5%', // Para mantener el margen del 95% del container
-          top: '120px', // Alineado con el paddingTop del contenedor principal
-          height: '410px', // Altura total menos el espacio para el navbar y un pequeño margen
-          overflowY: 'auto', // Por si el contenido del filtro es muy largo
-          p: 2,
-          borderRadius: '20px',
-          boxShadow: 6,
-          bgcolor: 'background.paper',
-          '&::-webkit-scrollbar': {
-            width: '8px',
-          },
-          '&::-webkit-scrollbar-track': {
-            background: '#f1f1f1',
-            borderRadius: '4px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            background: '#888',
-            borderRadius: '4px',
-          },
-          '&::-webkit-scrollbar-thumb:hover': {
-            background: '#555',
-          },
-        }}
+      {/* Botón de filtros para móvil */}
+      {isMobile && (
+        <Button
+          variant="contained"
+          startIcon={<FilterListIcon />}
+          onClick={() => setDrawerOpen(true)}
+          sx={{
+            position: 'fixed',
+            top: '80px',
+            right: '16px',
+            boxShadow: 6,
+            zIndex: 1000
+          }}
+        >
+          Filtros
+        </Button>
+      )}
+      {/* Drawer para filtros en móvil */}
+      <Drawer
+        anchor="right"
+        open={isMobile && drawerOpen}
+        onClose={() => setDrawerOpen(false)}
       >
-        <Typography variant="h6" sx={{fontWeight: 'bold'}}>Categorías</Typography>
-        {Object.entries(categoryNames).map(([id, name]) => (
-          <FormControlLabel
-            key={id}
-            control={
-              <Checkbox 
-                checked={selectedCategories[id]} 
-                onChange={handleCategoryChange} 
-                name={id}
-              />
-            }
-            label={name}
-          />
-        ))}
-
-        <Typography variant="h6" sx={{fontWeight: 'bold', mt: 1}}>Rango de precios</Typography>
-        <Box>
+        <Box
+          sx={{
+            width: '280px',
+            p: 2,
+            height: '100%',
+            bgcolor: 'background.paper'
+          }}
+        >
+          <Typography variant="h6" sx={{fontWeight: 'bold', mb: 2}}>Filtros</Typography>
+          <Typography variant="subtitle1" sx={{fontWeight: 'bold'}}>Categorías</Typography>
+          {Object.entries(categoryNames).map(([id, name]) => (
+            <FormControlLabel
+              key={id}
+              control={
+                <Checkbox 
+                  checked={selectedCategories[id]} 
+                  onChange={handleCategoryChange} 
+                  name={id}
+                />
+              }
+              label={name}
+            />
+          ))}
+  
+          <Typography variant="subtitle1" sx={{fontWeight: 'bold', mt: 2}}>Rango de precios</Typography>
           <TextField
             label="Precio mínimo"
             type="number"
@@ -286,52 +361,137 @@ const Products = () => {
             margin="normal"
             InputProps={{ inputProps: { min: 0 } }}
           />
+          <Button 
+            variant="contained" 
+            color="primary" 
+            fullWidth 
+            sx={{ mt: 2, mb: 1 }}
+            onClick={() => {
+              applyFilters();
+              setDrawerOpen(false);
+            }}
+          >
+            Aplicar filtros
+          </Button>
+          <Button 
+            variant="outlined" 
+            color="primary" 
+            fullWidth
+            onClick={() => {
+              clearFilters();
+              setDrawerOpen(false);
+            }}
+          >
+            Limpiar filtros
+          </Button>
         </Box>
-        <Button 
-          variant="contained" 
-          color="primary" 
-          fullWidth 
-          sx={{ mb: 2 }}
-          onClick={applyFilters}
+      </Drawer>
+  
+      {/* Filtros para desktop */}
+      {!isMobile && (
+        <Box
+          sx={{
+            width: '250px',
+            position: 'fixed',
+            left: '2.5%',
+            top: '120px',
+            height: '410px',
+            overflowY: 'auto',
+            p: 2,
+            borderRadius: '20px',
+            boxShadow: 6,
+            bgcolor: 'background.paper',
+            '&::-webkit-scrollbar': {
+              width: '8px',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: '#f1f1f1',
+              borderRadius: '4px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: '#888',
+              borderRadius: '4px',
+            },
+            '&::-webkit-scrollbar-thumb:hover': {
+              background: '#555',
+            },
+          }}
         >
-          Aplicar filtros
-        </Button>
-        <Button 
-          variant="outlined" 
-          color="primary" 
-          fullWidth
-          onClick={clearFilters}
-        >
-          Limpiar filtros
-        </Button>
-      </Box>
-
-      {/* Contenedor de productos - Con margen izquierdo para dar espacio al filtro fijo */}
-      {/* Contenedor de productos - Con margen izquierdo para dar espacio al filtro fijo */}
+          <Typography variant="h6" sx={{fontWeight: 'bold'}}>Categorías</Typography>
+          {Object.entries(categoryNames).map(([id, name]) => (
+            <FormControlLabel
+              key={id}
+              control={
+                <Checkbox 
+                  checked={selectedCategories[id]} 
+                  onChange={handleCategoryChange} 
+                  name={id}
+                />
+              }
+              label={name}
+            />
+          ))}
+  
+          <Typography variant="h6" sx={{fontWeight: 'bold', mt: 1}}>Rango de precios</Typography>
+          <TextField
+            label="Precio mínimo"
+            type="number"
+            value={minPrice}
+            onChange={handleMinPriceChange}
+            fullWidth
+            margin="normal"
+            InputProps={{ inputProps: { min: 0 } }}
+          />
+          <TextField
+            label="Precio máximo"
+            type="number"
+            value={maxPrice}
+            onChange={handleMaxPriceChange}
+            fullWidth
+            margin="normal"
+            InputProps={{ inputProps: { min: 0 } }}
+          />
+          <Button 
+            variant="contained" 
+            color="primary" 
+            fullWidth 
+            sx={{ mb: 2 }}
+            onClick={applyFilters}
+          >
+            Aplicar filtros
+          </Button>
+          <Button 
+            variant="outlined" 
+            color="primary" 
+            fullWidth
+            onClick={clearFilters}
+          >
+            Limpiar filtros
+          </Button>
+        </Box>
+      )}
+  
+      {/* Contenedor de productos */}
       <Box
         sx={{
           flexGrow: 1,
-          marginLeft: '320px', // 300px del ancho del filtro + 20px de espacio
-          padding: 1,
+          marginLeft: isMobile ? 0 : '320px',
+          padding: isMobile ? 2 : 1,
           minHeight: '100vh',
         }}
       >
-        {/* Mostrar productos cargados o skeleton mientras se cargan */}
         {loading ? (
-          <Grid container spacing={4}>
+          <Grid container spacing={2}>
             {[...Array(8)].map((_, index) => (
-              <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+              <Grid item key={index} xs={12} sm={6}>
                 <Card sx={{ height: '100%' }}>
-                  <Skeleton variant="rectangular" height={200} />
+                  <Skeleton variant="rectangular" height={150} />
                   <CardContent>
-                    <Skeleton variant="text" height={32} width="80%" />
-                    <Skeleton variant="text" height={24} width="40%" />
-                    <Skeleton variant="text" height={24} width="60%" />
-                    <Box sx={{ mt: 2 }}>
-                      <Skeleton variant="rectangular" height={36} width="100%" />
-                    </Box>
+                    <Skeleton variant="text" height={24} width="80%" />
+                    <Skeleton variant="text" height={20} width="40%" />
+                    <Skeleton variant="text" height={20} width="60%" />
                     <Box sx={{ mt: 1 }}>
-                      <Skeleton variant="rectangular" height={36} width="100%" />
+                      <Skeleton variant="rectangular" height={30} width="100%" />
                     </Box>
                   </CardContent>
                 </Card>
@@ -339,8 +499,7 @@ const Products = () => {
             ))}
           </Grid>
         ) : (
-          // Si los productos ya están cargados, mostrar lista filtrada
-          <Grid container spacing={4}>
+          <Grid container spacing={2}>
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
                 <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
@@ -355,12 +514,13 @@ const Products = () => {
                   >
                     <CardMedia
                       component="img"
-                      height="200"
-                      image={productImages[product.id]} // Asignar la imagen según el id
+                      height={isMobile ? "150" : "200"}
+                      image={productImages[product.id]}
                       alt={product.name}
+                      sx={{ objectFit: 'contain', p: 1 }}
                     />
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography gutterBottom variant="h5" component="div">
+                    <CardContent sx={{ flexGrow: 1, p: isMobile ? 1 : 2 }}>
+                      <Typography gutterBottom variant="h6" component="div">
                         {product.name}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
@@ -369,30 +529,38 @@ const Products = () => {
                       <Typography variant="body2" color="text.secondary">
                         {categoryNames[product.category_id]}
                       </Typography>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{ marginTop: 1, marginRight: 1 }}
-                        onClick={() => addToCart(product)}
-                        startIcon={<AddShoppingCartIcon />}
-                      >
-                        Añadir
-                      </Button>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{ marginTop: 1 }}
-                        onClick={() => handleOpenDialog(product)}
-                        startIcon={<ChecklistIcon />}
-                      >
-                        Ver detalles
-                      </Button>
+                      <Box sx={{ 
+                        display: 'flex', 
+                        flexDirection: isMobile ? 'column' : 'row', 
+                        gap: 1, 
+                        mt: 1 
+                      }}>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          fullWidth={isMobile}
+                          onClick={() => addToCart(product)}
+                          startIcon={<AddShoppingCartIcon />}
+                          size={isMobile ? "small" : "medium"}
+                        >
+                          Añadir
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          fullWidth={isMobile}
+                          onClick={() => handleOpenDialog(product)}
+                          startIcon={<ChecklistIcon />}
+                          size={isMobile ? "small" : "medium"}
+                        >
+                          Ver detalles
+                        </Button>
+                      </Box>
                     </CardContent>
                   </Card>
                 </Grid>
               ))
             ) : (
-              // Mostrar mensaje si no hay productos que coincidan con la búsqueda
               <Typography variant="h6" sx={{ textAlign: 'center', width: '100%', mt: 4 }}>
                 No hay productos que coincidan con tu búsqueda
               </Typography>
@@ -400,10 +568,13 @@ const Products = () => {
           </Grid>
         )}
       </Box>
-
-
-      {/* Dialog se mantiene igual */}
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
+  
+      {/* Dialog de detalles del producto */}
+      <Dialog 
+        open={openDialog} 
+        onClose={handleCloseDialog}
+        fullScreen={isMobile}
+      >
         {selectedProduct && (
           <>
             <DialogTitle>{selectedProduct.name}</DialogTitle>
@@ -411,7 +582,12 @@ const Products = () => {
               <img 
                 src={productImages[selectedProduct.id]} 
                 alt={selectedProduct.name} 
-                style={{ width: '100%', marginBottom: '20px' }} 
+                style={{ 
+                  width: '100%', 
+                  marginBottom: '20px',
+                  maxHeight: isMobile ? '300px' : '400px',
+                  objectFit: 'contain' 
+                }} 
               />
               <Typography variant="body1">Categoría: {categoryNames[selectedProduct.category_id]}</Typography>
               <Typography variant="body1">Precio: ${selectedProduct.price}</Typography>
