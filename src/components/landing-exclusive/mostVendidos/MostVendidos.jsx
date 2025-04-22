@@ -8,7 +8,7 @@ function MostVendidos() {
   // Array de productos más vendidos con sus IDs de categoría
   const mas_vendidos = [
     { name: 'Plasticos', image: 'https://s.alicdn.com/@sc04/kf/H5f546b8dfaf147fb9724db9aa84ebe767.jpg_300x300.jpg', categoryId: 1 },
-    { name: 'Aluminios', image: 'https://distribuidoratodoinsumos.cl/wp-content/uploads/2023/05/ti-219.jpg', categoryId: 2 },
+    { name: 'Aluminios', image: 'https://img.freepik.com/foto-gratis/brochetas-pollo-alto-angulo-bandeja-pimiento-rojo-tomates-cherry_23-2148699096.jpg', categoryId: 2 },
     { name: 'Papeleria', image: 'https://img.freepik.com/fotos-premium/utensilios-papel-ecologicos_89381-3383.jpg', categoryId: 3 },
     { name: 'Material', image: 'https://www.mallasyplasticos.com/227-large_default/film-polietileno-natural-g-400-rollos.jpg', categoryId: 4 },
   ];
